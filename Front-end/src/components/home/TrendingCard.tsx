@@ -14,21 +14,32 @@ export default function TrendingCard({
   isNewArrival = false,
 }: TrendingCardProps) {
   return (
-    <article className="w-full overflow-hidden rounded-xl bg-[#252525]">
-      {/* Product image */}
-      <div className="relative aspect-[1.04/1] w-full">
-        <img src={image} alt={title} className="h-full w-full object-cover" />
+    <article
+      className="
+        flex flex-col justify-between overflow-hidden rounded-xl bg-[#262626]
+        w-full h-[437px] 
+        sm:max-w-[811px] 
+        lg:max-w-[406px]
+        mx-auto shadow-md
+      "
+    >
+      {/* Product Image Area */}
+      <div className="relative flex-1 w-full min-h-0 overflow-hidden">
+        <img
+          src={image}
+          alt={title}
+          className="h-full w-full object-cover object-top hover:scale-105 transition-transform duration-300"
+        />
 
-        {/* Conditional new-arrival label */}
+        {/* Conditional "New Arrivals" Tag */}
         {isNewArrival && (
-          <span className="absolute left-3 top-3 flex items-center gap-1.5 rounded-md bg-[#00B96B] px-2 py-1.5 text-[11px] font-medium text-white shadow-sm">
+          <span className="absolute left-3 top-3 flex items-center gap-1.5 rounded bg-[#00B96B] px-2.5 py-1 text-[11px] font-medium text-white shadow-sm">
             <svg
-              width="15"
-              height="15"
+              className="w-3.5 h-3.5"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.7"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
               aria-hidden="true"
@@ -42,17 +53,21 @@ export default function TrendingCard({
         )}
       </div>
 
-      {/* Product information */}
-      <div className="flex min-h-[100px] items-center justify-between gap-3 px-4 py-3 text-white">
+      {/* Product Information Footer */}
+      <div className="flex h-[80px] shrink-0 items-center justify-between gap-3 px-5 py-3 text-white bg-[#262626]">
         <div className="min-w-0 flex-1">
-          <h3 className="text-base font-semibold leading-6">{title}</h3>
-
-          <p className="mt-1 truncate text-sm text-white/60">{description}</p>
+          <h3 className="truncate text-sm sm:text-base font-semibold leading-tight text-white">
+            {title}
+          </h3>
+          <p className="mt-1 truncate text-xs text-neutral-400">
+            {description}
+          </p>
         </div>
 
+        {/* Shop Now Button */}
         <a
           href="#"
-          className="flex shrink-0 items-center justify-center whitespace-nowrap rounded-lg border border-white/70 px-4 py-3 text-sm font-medium transition-colors hover:bg-white hover:text-[#252525]"
+          className="flex shrink-0 items-center justify-center whitespace-nowrap rounded border border-neutral-500/80 px-3.5 py-2 text-xs font-medium text-neutral-200 transition-colors hover:border-white hover:bg-white hover:text-[#262626]"
         >
           ${price.toFixed(0)}&nbsp; Shop Now
         </a>
