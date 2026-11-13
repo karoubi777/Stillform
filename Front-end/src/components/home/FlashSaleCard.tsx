@@ -1,15 +1,8 @@
 import { useCountdown } from "../../hooks/useCountdown";
+import type { FlashSaleProduct } from "../../types/product";
 
-type FlashSaleCardProps = {
-  brand: string;
-  name: string;
-  image: string;
-  price: number;
-  originalPrice: number;
-  rating: number;
-  reviews: number;
-  endTime: string;
-};
+// Inherit directly from FlashSaleProduct
+type FlashSaleCardProps = FlashSaleProduct;
 
 export default function FlashSaleCard({
   brand,
@@ -18,25 +11,16 @@ export default function FlashSaleCard({
   price,
   originalPrice,
   rating,
-  reviews,
+  reviews = 0, // Default fallback if undefined
   endTime,
 }: FlashSaleCardProps) {
   const time = useCountdown(endTime);
-
   const discount = Math.round((1 - price / originalPrice) * 100);
 
   return (
-    <article
-      className="
-        flex flex-col justify-between shrink-0 rounded-2xl bg-white p-4 
-        border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-lg transition-shadow
-        w-[200px] h-[380px]
-        sm:w-[396px] sm:h-[380px]
-        lg:w-[300px] lg:h-[380px]
-      "
-    >
+    <article className="flex flex-col justify-between rounded-2xl bg-white p-4 border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-lg transition-shadow w-full max-w-[396px] lg:max-w-[300px] h-[380px] mx-auto">
       {/* Countdown Timer Header */}
-      <div className="flex flex-col items-center pt-1">
+      <div className="flex flex-col items-center pt-1 shrink-0">
         <h3 className="text-xs sm:text-sm font-semibold text-gray-400 tracking-wide">
           Deal of the Day
         </h3>
@@ -62,8 +46,8 @@ export default function FlashSaleCard({
         </div>
       </div>
 
-      {/* Product Image */}
-      <div className="my-auto flex h-[150px] sm:h-[165px] items-center justify-center p-2">
+      {/* Image */}
+      <div className="my-auto flex flex-1 w-full min-h-0 items-center justify-center p-2">
         <img
           src={image}
           alt={name}
@@ -71,15 +55,13 @@ export default function FlashSaleCard({
         />
       </div>
 
-      {/* Product Information */}
-      <div className="pt-2">
-        <h4 className="text-sm sm:text-base font-bold text-gray-900 leading-tight">
+      {/* Info */}
+      <div className="pt-2 shrink-0">
+        <h4 className="text-sm sm:text-base font-bold text-gray-900 leading-tight truncate">
           {brand}
         </h4>
-
         <p className="mt-1 truncate text-xs sm:text-sm text-gray-500">{name}</p>
 
-        {/* Rating */}
         <div className="mt-1.5 flex items-center gap-1.5 text-xs">
           <span className="text-[#FFB900]">
             {"★".repeat(Math.round(rating))}
@@ -87,26 +69,17 @@ export default function FlashSaleCard({
           <span className="text-gray-400 text-[11px]">({reviews})</span>
         </div>
 
-        {/* Pricing & Discount */}
         <div className="mt-2.5 flex items-center justify-between">
           <span className="text-sm sm:text-base font-bold text-[#FF3B16]">
             ${price.toFixed(2)}
           </span>
-
           <span className="text-xs text-gray-400 line-through">
             ${originalPrice.toFixed(2)}
           </span>
-
           <span className="rounded bg-[#FF3B16] px-1.5 py-0.5 text-[10px] font-bold text-white leading-tight">
             -{discount}%
           </span>
         </div>
-
-        {time.expired && (
-          <p className="mt-1 text-center text-[10px] font-semibold text-red-500">
-            Sale ended
-          </p>
-        )}
       </div>
     </article>
   );

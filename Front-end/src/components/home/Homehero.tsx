@@ -1,7 +1,7 @@
 export default function Homehero() {
   return (
     <>
-      <section className="flex flex-col gap-3 w-full max-w-[480px] mx-auto px-3 py-2 md:hidden">
+      <section className="flex flex-col gap-3 w-full max-w-[480px] mx-auto px-3 py-2 sm:hidden">
         <div className="grid grid-cols-2 w-full overflow-hidden bg-[#B82B3B]">
           <div className="flex flex-col justify-between p-5 text-white">
             <div className="flex flex-col gap-2">

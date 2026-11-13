@@ -9,12 +9,11 @@ export default function TopProductCard({
   name,
   image,
   rating,
-  reviews,
+  reviews = 0,
   price,
   originalPrice,
 }: TopProductCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
-
   const discount = Math.round(((originalPrice - price) / originalPrice) * 100);
 
   return (
@@ -22,25 +21,17 @@ export default function TopProductCard({
       className="
         flex flex-col justify-between overflow-hidden rounded-xl bg-white 
         shadow-[0_2px_15px_rgba(0,0,0,0.06)] hover:shadow-lg transition-shadow duration-200
-        w-[260px] h-[480px]
-        sm:w-[395px] sm:h-[480px]
-        lg:w-[300px] lg:h-[480px]
+        /* FLUID WIDTH: Fills column space up to limits, never overflows */
+        w-full max-w-[395px] xl:max-w-[300px] h-[480px]
         mx-auto
       "
     >
-      {/* Product Image Area */}
-      <div
-        className="
-          relative w-full shrink-0 overflow-hidden bg-[#F5F6F6]
-          h-[327px]
-          sm:h-[327px]
-          lg:h-[327px]
-        "
-      >
+      {/* Product Image Area: fluid height with object-contain */}
+      <div className="relative w-full h-[320px] shrink-0 bg-[#F5F6F6] flex items-center justify-center p-3 overflow-hidden">
         <img
           src={image}
           alt={name}
-          className="h-full w-full object-cover object-top hover:scale-105 transition-transform duration-300 "
+          className="h-full w-full object-contain hover:scale-105 transition-transform duration-300"
         />
       </div>
 
@@ -74,7 +65,6 @@ export default function TopProductCard({
             </button>
           </div>
 
-          {/* Product name / category */}
           <p className="mt-0.5 truncate text-xs text-gray-500">{name}</p>
         </div>
 
@@ -88,9 +78,7 @@ export default function TopProductCard({
           {/* Pricing Row */}
           <div className="mt-2 flex items-center gap-2.5 whitespace-nowrap text-xs">
             <span className="text-sm font-bold text-[#FF3B16]">${price}</span>
-
             <span className="text-gray-400 line-through">${originalPrice}</span>
-
             <span className="text-[#FF3B16] font-semibold">-{discount}%</span>
           </div>
         </div>
