@@ -265,3 +265,66 @@ export const mockRelatedProducts: Product[] = [
     reviewCount: 0,
   },
 ];
+export const initialCartItems: (CartItem & { color?: string })[] = [
+  {
+    id: 1,
+    brand: "Mango",
+    name: "2 Piece Mango set- Regular fit",
+    price: 25.99,
+    image: "/images/cart/mango-set.png",
+    quantity: 1,
+    color: "#EAB308", // Yellow
+  },
+  {
+    id: 2,
+    brand: "Zara",
+    name: "3 Pieces Zara set- Casual fit",
+    price: 32.99,
+    image: "/images/cart/zara-set.png",
+    quantity: 1,
+    color: "#18181B", // Black
+  },
+  {
+    id: 3,
+    brand: "Zara",
+    name: "Zara Cardigan-Regular fit",
+    price: 40.25,
+    image: "/images/cart/cardigan-blue.png",
+    quantity: 1,
+    color: "#3B82F6", // Blue
+  },
+];
+export const recommendedProducts: Product[] = [
+  {
+    id: 101,
+    brand: "Zara",
+    name: "SHORT PRINTED DRESS",
+    price: 69.99,
+    originalPrice: 129.99,
+    image: "/images/cart/dress-blue.png",
+  },
+  {
+    id: 102,
+    brand: "Zara",
+    name: "SHORT PRINTED DRESS",
+    price: 69.99,
+    originalPrice: 129.99,
+    image: "/images/cart/dress-gray.png",
+  },
+  {
+    id: 103,
+    brand: "Zara",
+    name: "SHORT PRINTED DRESS",
+    price: 69.99,
+    originalPrice: 129.99,
+    image: "/images/cart/dress-pink.png",
+  },
+  {
+    id: 104,
+    brand: "Zara",
+    name: "SHORT PRINTED DRESS",
+    price: 69.99,
+    originalPrice: 129.99,
+    image: "/images/cart/dress-green.png",
+  },
+];
