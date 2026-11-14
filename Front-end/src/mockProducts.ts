@@ -4,7 +4,9 @@ import type {
   TrendingProduct,
   PromoBannerData,
   MagSafeSlide,
+  CartItem,
 } from "./types/product";
+
 export const promoBannersMock: Record<
   "sectionOne" | "sectionTwo",
   PromoBannerData
@@ -22,6 +24,56 @@ export const promoBannersMock: Record<
     secondBgColor: "#0186C4", // Dark charcoal
   },
 };
+export const mockcartitems: CartItem[] = [
+  {
+    id: 101,
+    brand: "Mango",
+    name: "Kimono & Collar - Black - Regular fit",
+    image: "/images/homepage/top100/photo-1.png",
+    price: 218,
+    originalPrice: 290,
+    rating: 5,
+    reviews: 289,
+    reviewCount: 4,
+    quantity: 1, // <-- Added quantity
+  },
+  {
+    id: 102,
+    brand: "Zara",
+    name: "Midi slip- Daily fit",
+    image: "/images/homepage/top100/photo-2.png",
+    price: 95,
+    originalPrice: 145,
+    rating: 5,
+    reviews: 523,
+    reviewCount: 3,
+    quantity: 2, // <-- Added quantity (e.g., 2 items)
+  },
+  {
+    id: 103,
+    brand: "Uniqlo",
+    name: "Midi skirt Slim fit - Bohemian",
+    image: "/images/homepage/top100/photo-3.png",
+    price: 125,
+    originalPrice: 156,
+    rating: 5,
+    reviews: 106,
+    reviewCount: 0,
+    quantity: 1, // <-- Added quantity
+  },
+  {
+    id: 104,
+    brand: "Mango dress",
+    name: "Kimono & Collar - Colorful - Night skirt fit",
+    image: "/images/homepage/top100/photo-4.png",
+    price: 365,
+    originalPrice: 487,
+    rating: 5,
+    reviews: 121,
+    reviewCount: 0,
+    quantity: 1, // <-- Added quantity
+  },
+];
 
 export const mockFlashSales: FlashSaleProduct[] = [
   {
@@ -164,5 +216,52 @@ export const mockMagSafeSlides: MagSafeSlide[] = [
     description:
       "Lose your knack for losing things. Attach one to your keys, slip another in your backpack.",
     image: "/images/homepage/Iphone.png",
+  },
+];
+export const mockRelatedProducts: Product[] = [
+  {
+    id: 101,
+    brand: "Mango",
+    name: "Kimono & Collar - Black - Regular fit",
+    image: "/images/homepage/top100/photo-1.png",
+    price: 218,
+    originalPrice: 290,
+    rating: 5,
+    reviews: 289,
+    reviewCount: 4,
+  },
+  {
+    id: 102,
+    brand: "Zara",
+    name: "Midi slip- Daily fit",
+    image: "/images/homepage/top100/photo-2.png",
+    price: 95,
+    originalPrice: 145,
+    rating: 5,
+    reviews: 523,
+    reviewCount: 3,
+  },
+  {
+    id: 103,
+    brand: "Uniqlo",
+    name: "Midi skirt Slim fit - Bohemian",
+    image: "/images/homepage/top100/photo-3.png",
+    price: 125,
+    originalPrice: 156,
+    rating: 5,
+    reviews: 106,
+    reviewCount: 0,
+  },
+  {
+    id: 104,
+    brand: "Mango dress",
+    name: "Kimono & Collar - Colorful - Night skirt fit",
+    image: "/images/homepage/top100/photo-4.png",
+
+    price: 365,
+    originalPrice: 487,
+    rating: 5,
+    reviews: 121,
+    reviewCount: 0,
   },
 ];

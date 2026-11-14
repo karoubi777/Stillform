@@ -13,6 +13,7 @@ import {
   mockTopProducts,
   promoBannersMock,
   mockMagSafeSlides,
+  
 } from "../mockProducts";
 
 export default function HomePage() {

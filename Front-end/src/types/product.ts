@@ -1,14 +1,19 @@
 export type Product = {
   id: number | string;
+  slug?: string;
   brand: string;
   name: string;
   image: string;
   price: number;
-  originalPrice: number;
-  rating: number;
-  reviews?: number; // Optional
-  reviewCount?: number; // Optional (or remove if using reviews)
+  originalPrice?: number;
+  rating?: number;
+  reviews?: number;
+  reviewCount?: number;
+  category?: string;
   description?: string;
+};
+export type CartItem = Product & {
+  quantity: number;
 };
 
 export type FlashSaleProduct = Product & {

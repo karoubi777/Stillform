@@ -1,17 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-type Product = {
-  id: number | string;
-  slug: string;
-  name: string;
-  price: number;
-  image: string;
-  category?: string;
-};
+import type { Product } from "../../types/product";
 
 type SearchBarProps = {
-  products: Product[];
+  products?: Product[];
   categories?: string[];
 };
 
@@ -20,7 +13,7 @@ const DEBOUNCE_DELAY = 300;
 const MAX_SUGGESTIONS = 5;
 
 export default function SearchBar({
-  products,
+  products = [],
   categories = ["men", "women"],
 }: SearchBarProps) {
   const navigate = useNavigate();
@@ -31,6 +24,7 @@ export default function SearchBar({
   const [suggestions, setSuggestions] = useState<Product[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
+  // 1. Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -79,7 +73,9 @@ export default function SearchBar({
   function handleSelect(product: Product) {
     setIsOpen(false);
     setQuery("");
-    navigate(`/products/${product.slug}`);
+    // Falls back to product.id if slug is not defined
+    const targetPath = product.slug || product.id;
+    navigate(`/products/${targetPath}`);
   }
 
   function handleSubmit(event?: React.SubmitEvent<HTMLFormElement>) {
@@ -143,8 +139,9 @@ export default function SearchBar({
         </button>
       </form>
 
+      {/* Suggestion Dropdown */}
       {isOpen && (
-        <div className="absolute left-0 top-full z-50 mt-1 w-full border border-gray-200 bg-white shadow-lg">
+        <div className="absolute left-0 top-full z-50 mt-1 w-full border border-gray-200 bg-white shadow-lg rounded-b-md overflow-hidden">
           {suggestions.length > 0 ? (
             <ul role="listbox" aria-label="Search suggestions">
               {suggestions.map((product) => (
@@ -152,27 +149,27 @@ export default function SearchBar({
                   <button
                     type="button"
                     onClick={() => handleSelect(product)}
-                    className="flex w-full items-center gap-3 px-3 py-3 text-left hover:bg-gray-50 focus:bg-gray-50 outline-none"
+                    className="flex w-full items-center gap-3 px-3 py-2.5 text-left hover:bg-gray-50 focus:bg-gray-50 outline-none transition-colors border-b border-gray-50 last:border-b-0"
                   >
                     <img
                       src={product.image}
-                      alt=""
-                      className="h-12 w-10 shrink-0 object-cover"
+                      alt={product.name}
+                      className="h-10 w-10 shrink-0 object-contain rounded bg-[#F5F6F6] p-1"
                     />
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm text-gray-900">
+                    <div className="min-w-0 flex-1">
+                      <span className="block truncate text-xs sm:text-sm font-medium text-gray-900">
                         {product.name}
                       </span>
-                      <span className="block text-sm text-gray-500">
+                      <span className="block text-xs text-gray-500 font-semibold mt-0.5">
                         ${product.price.toFixed(2)}
                       </span>
-                    </span>
+                    </div>
                   </button>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="px-3 py-4 text-sm text-gray-500">
+            <p className="px-3 py-4 text-xs sm:text-sm text-gray-500 text-center">
               No matching products found.
             </p>
           )}
@@ -180,7 +177,7 @@ export default function SearchBar({
           <button
             type="button"
             onClick={() => handleSubmit()}
-            className="w-full border-t border-gray-200 px-3 py-3 text-left text-sm font-medium hover:bg-gray-50"
+            className="w-full border-t border-gray-200 px-3 py-2.5 text-center text-xs font-semibold text-[#3B72D9] hover:bg-gray-50 transition-colors"
           >
             View all results
           </button>
