@@ -73,3 +73,38 @@ export type CheckoutStep =
   | "customer-info"
   | "shipping-payment"
   | "confirmation";
+
+export type CountryOption = {
+  code: "US" | "DE";
+  name: string;
+  phoneCode: string;
+  states: string[];
+};
+
+export type CustomerInfo = {
+  email: string;
+  firstName: string;
+  lastName: string;
+  country: CountryOption["code"] | "";
+  state: string;
+  address: string;
+  phone: string;
+};
+export type PaymentMethod = {
+  id: string;
+  name: string;
+  description: string;
+  logo: string;
+  available: boolean;
+};
+
+export type ShippingMethod = {
+  id: string;
+  name: string;
+  deliveryTime: string;
+  cost: number;
+  insuranceAvailable: boolean;
+  logo: string;
+  available: boolean;
+  supportedCountries?: CountryOption["code"][];
+};

@@ -73,10 +73,10 @@ export default function Header({
     (acc, item) => acc + (item.quantity || 1),
     0,
   );
-  const totalCartCost = cartItems.reduce(
-    (acc, item) => acc + item.price * (item.quantity || 1),
-    0,
-  );
+ const totalCartCost = cartItems.reduce(
+  (acc, item) => acc + item.product.price * (item.quantity || 1),
+  0,
+);
 
   return (
     <>

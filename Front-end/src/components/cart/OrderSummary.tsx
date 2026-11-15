@@ -1,5 +1,5 @@
 import type { CheckoutStep, OrderTotals } from "../../types/product";
-// (rest of OrderSummary.tsx remains identical)
+
 interface OrderSummaryProps {
   totals: OrderTotals;
   isAuthenticated: boolean;
@@ -10,7 +10,8 @@ interface OrderSummaryProps {
   onCouponSubmit: (e: React.SubmitEvent<HTMLFormElement>) => void;
   currentStep: CheckoutStep;
   onPrimaryAction: () => void;
-  disabled?: boolean;
+  canProceed?: boolean;
+  showCoupon?: boolean;
 }
 
 export default function OrderSummary({
@@ -23,18 +24,18 @@ export default function OrderSummary({
   onCouponSubmit,
   currentStep,
   onPrimaryAction,
-  disabled = false,
+  canProceed = true,
+  showCoupon = true,
 }: OrderSummaryProps) {
   const actionLabels: Record<CheckoutStep, string> = {
     cart: isAuthenticated ? "SHOP NOW" : "CHECKOUT",
-    "customer-info": "CONTINUE TO SHIPPING",
-    "shipping-payment": "REVIEW ORDER",
+    "customer-info": "SHOP NOW",
+    "shipping-payment": "SHOP NOW",
     confirmation: "CONFIRM & PAY",
   };
 
   return (
     <div className="w-full sm:w-[255px] md:w-[295px] lg:w-[309px] shrink-0 flex flex-col gap-4">
-      {/* Summary Box: Full-bleed background on mobile, card on tablet/desktop */}
       <div className="w-[calc(100%+2rem)] -mx-4 px-4 py-7 bg-[#EBEBEB] rounded-t-xl sm:w-full sm:mx-0 sm:p-5 sm:rounded-md text-xs">
         <div className="w-full max-w-[300px] mx-auto sm:max-w-none flex flex-col justify-between min-h-[340px] sm:min-h-[370px]">
           <h2 className="text-sm font-bold text-gray-900 mb-3">
@@ -98,7 +99,6 @@ export default function OrderSummary({
             </label>
           </div>
 
-          {/* Total Row */}
           <div className="flex justify-between items-center border-t border-gray-300 pt-3 my-3">
             <span className="text-xs font-bold text-gray-900">Total Price</span>
             <span className="text-base font-extrabold text-gray-900 whitespace-nowrap">
@@ -106,12 +106,15 @@ export default function OrderSummary({
             </span>
           </div>
 
-          {/* Primary Step Action Button */}
           <button
             type="button"
-            disabled={disabled}
+            aria-disabled={!canProceed}
             onClick={onPrimaryAction}
-            className="w-full h-[46px] rounded bg-[#3D3D3D] hover:bg-[#2C2C2C] disabled:bg-[#CFCFCF] disabled:cursor-not-allowed active:scale-[0.99] text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition"
+            className={`w-full h-[46px] rounded text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition ${
+              canProceed
+                ? "bg-[#3D3D3D] hover:bg-[#2C2C2C] active:scale-[0.99] cursor-pointer"
+                : "bg-[#CFCFCF] cursor-not-allowed"
+            }`}
           >
             <svg
               className="w-4 h-4"
@@ -131,29 +134,30 @@ export default function OrderSummary({
         </div>
       </div>
 
-      {/* Coupon Code Input Area */}
-      <form
-        onSubmit={onCouponSubmit}
-        className="flex items-center w-full rounded border border-gray-300 overflow-hidden h-[48px] bg-white"
-      >
-        <input
-          type="text"
-          value={couponCode}
-          onChange={(e) => onCouponChange(e.target.value)}
-          placeholder="Enter coupon code"
-          className="w-full flex-1 px-3 text-xs text-gray-800 placeholder:text-gray-400 outline-none h-full min-w-0"
-        />
-        <button
-          type="submit"
-          className={`h-full px-3 md:px-4 text-white text-[10px] md:text-[11px] font-semibold leading-tight text-center transition shrink-0 max-w-[46%] ${
-            isAuthenticated
-              ? "bg-[#3B72D9] hover:bg-blue-700"
-              : "bg-[#262626] hover:bg-black"
-          }`}
+      {showCoupon && (
+        <form
+          onSubmit={onCouponSubmit}
+          className="flex items-center w-full rounded border border-gray-300 overflow-hidden h-[48px] bg-white"
         >
-          {isAuthenticated ? "Apply code" : "Login and Apply code"}
-        </button>
-      </form>
+          <input
+            type="text"
+            value={couponCode}
+            onChange={(e) => onCouponChange(e.target.value)}
+            placeholder="Enter coupon code"
+            className="w-full flex-1 px-3 text-xs text-gray-800 placeholder:text-gray-400 outline-none h-full min-w-0"
+          />
+          <button
+            type="submit"
+            className={`h-full px-3 md:px-4 text-white text-[10px] md:text-[11px] font-semibold leading-tight text-center transition shrink-0 max-w-[46%] ${
+              isAuthenticated
+                ? "bg-[#3B72D9] hover:bg-blue-700"
+                : "bg-[#262626] hover:bg-black"
+            }`}
+          >
+            {isAuthenticated ? "Apply code" : "Login and Apply code"}
+          </button>
+        </form>
+      )}
     </div>
   );
 }

@@ -46,31 +46,47 @@ export default function CartDropdown({
       {cartItems.length > 0 ? (
         <>
           <div className="flex flex-col divide-y divide-gray-100 overflow-y-auto max-h-[220px]">
-            {displayedCartItems.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center gap-3 w-[237px] h-[54px] mx-auto py-1"
-              >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-10 h-12 object-contain rounded shrink-0 bg-[#F5F6F6]"
-                />
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-xs font-semibold text-gray-900 truncate">
-                    {item.name}
-                  </h4>
-                  <p className="text-[11px] font-bold text-gray-600 mt-0.5">
-                    ${item.price.toFixed(2)}
-                    {item.quantity && item.quantity > 1 && (
-                      <span className="text-gray-400 font-normal ml-1">
-                        × {item.quantity}
-                      </span>
-                    )}
-                  </p>
+            {displayedCartItems.map((item) => {
+              const thumbnail =
+                item.variant.image ||
+                item.product.image ||
+                item.product.images?.[0] ||
+                "";
+
+              return (
+                <div
+                  key={item.id}
+                  className="flex items-center gap-3 w-[237px] min-h-[54px] mx-auto py-1.5"
+                >
+                  <img
+                    src={thumbnail}
+                    alt={item.product.name}
+                    className="w-10 h-12 object-contain rounded shrink-0 bg-[#F5F6F6] p-0.5"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-xs font-semibold text-gray-900 truncate">
+                      {item.product.name}
+                    </h4>
+                    <div className="flex items-center gap-1.5 text-[10px] text-gray-400 mt-0.5">
+                      <span
+                        title={item.variant.color.name}
+                        style={{ backgroundColor: item.variant.color.hex }}
+                        className="w-2 h-2 rounded-full inline-block border border-gray-200"
+                      />
+                      <span>{item.variant.size}</span>
+                    </div>
+                    <p className="text-[11px] font-bold text-gray-600 mt-0.5">
+                      ${item.product.price.toFixed(2)}
+                      {item.quantity > 1 && (
+                        <span className="text-gray-400 font-normal ml-1">
+                          × {item.quantity}
+                        </span>
+                      )}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             {overflowCartCount > 0 && (
               <div className="py-2 text-center">
@@ -113,7 +129,6 @@ export default function CartDropdown({
           </div>
         </>
       ) : (
-        /* Empty State Desktop */
         <div className="flex flex-col items-center justify-center py-6 text-center">
           <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 mb-3">
             <svg
@@ -134,7 +149,7 @@ export default function CartDropdown({
             Your cart is empty
           </p>
           <p className="text-xs text-gray-400 mb-4 max-w-[190px]">
-            Looks like you haven't added anything to your cart yet.
+            Looks like you haven&apos;t added anything to your cart yet.
           </p>
           <button
             type="button"

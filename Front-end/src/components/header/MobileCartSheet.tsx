@@ -15,7 +15,6 @@ export default function MobileCartSheet({
   cartItems,
   totalCost,
 }: MobileCartSheetProps) {
-  // Prevent background scrolling when sheet is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -35,7 +34,7 @@ export default function MobileCartSheet({
       className="fixed inset-0 z-50 flex sm:hidden items-end bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in"
     >
       <div
-        onClick={(e) => e.stopPropagation()} // Stop click inside from closing
+        onClick={(e) => e.stopPropagation()}
         className="w-full bg-white rounded-t-2xl p-5 shadow-2xl flex flex-col gap-4 max-h-[85vh] overflow-y-auto animate-in slide-in-from-bottom duration-200"
       >
         {/* Header Row */}
@@ -56,28 +55,48 @@ export default function MobileCartSheet({
           <>
             {/* Items List */}
             <div className="flex flex-col divide-y divide-gray-100">
-              {cartItems.map((item) => (
-                <div key={item.id} className="flex items-center gap-3 py-3">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-12 h-14 object-contain rounded bg-neutral-100 shrink-0"
-                  />
-                  <div className="flex-1 min-w-0 text-left">
-                    <h4 className="text-sm font-medium text-gray-900 truncate">
-                      {item.name}
-                    </h4>
-                    <p className="text-xs text-gray-600 font-bold mt-0.5">
-                      ${item.price.toFixed(2)}
-                      {item.quantity && item.quantity > 1 && (
-                        <span className="text-gray-400 font-normal ml-1">
-                          × {item.quantity}
+              {cartItems.map((item) => {
+                const thumbnail =
+                  item.variant.image ||
+                  item.product.image ||
+                  item.product.images?.[0] ||
+                  "";
+
+                return (
+                  <div key={item.id} className="flex items-center gap-3 py-3">
+                    <img
+                      src={thumbnail}
+                      alt={item.product.name}
+                      className="w-12 h-14 object-contain rounded bg-neutral-100 p-0.5 shrink-0"
+                    />
+                    <div className="flex-1 min-w-0 text-left">
+                      <h4 className="text-sm font-medium text-gray-900 truncate">
+                        {item.product.name}
+                      </h4>
+                      <div className="flex items-center gap-2 text-[11px] text-gray-500 mt-0.5">
+                        <span className="flex items-center gap-1">
+                          <span
+                            title={item.variant.color.name}
+                            style={{ backgroundColor: item.variant.color.hex }}
+                            className="w-2.5 h-2.5 rounded-full inline-block border border-gray-200"
+                          />
+                          <span>{item.variant.color.name}</span>
                         </span>
-                      )}
-                    </p>
+                        <span className="text-gray-300">|</span>
+                        <span>Size: {item.variant.size}</span>
+                      </div>
+                      <p className="text-xs text-gray-700 font-bold mt-1">
+                        ${item.product.price.toFixed(2)}
+                        {item.quantity > 1 && (
+                          <span className="text-gray-400 font-normal ml-1">
+                            × {item.quantity}
+                          </span>
+                        )}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Total Row */}
@@ -107,7 +126,6 @@ export default function MobileCartSheet({
             </div>
           </>
         ) : (
-          /* Empty State */
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 mb-3">
               <svg
@@ -128,7 +146,7 @@ export default function MobileCartSheet({
               Your cart is empty
             </p>
             <p className="text-xs text-gray-400 mb-6">
-              Looks like you haven't added anything to your cart yet.
+              Looks like you haven&apos;t added anything to your cart yet.
             </p>
             <button
               type="button"
