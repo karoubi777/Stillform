@@ -13,18 +13,19 @@ export const promoBannersMock: Record<
 > = {
   sectionOne: {
     firstImage: "/images/homepage/promo/red.png",
-    firstBgColor: "#BF2E3B", // Red
+    firstBgColor: "#BF2E3B",
     secondImage: "/images/homepage/promo/blue-dark.png",
-    secondBgColor: "#1D5159", // Dark teal
+    secondBgColor: "#1D5159",
   },
   sectionTwo: {
     firstImage: "/images/homepage/promo/pink.png",
-    firstBgColor: "#D11FB5", // Blue
+    firstBgColor: "#D11FB5",
     secondImage: "/images/homepage/promo/blue.png",
-    secondBgColor: "#0186C4", // Dark charcoal
+    secondBgColor: "#0186C4",
   },
 };
-export const mockcartitems: CartItem[] = [
+
+export const mockTopProducts: Product[] = [
   {
     id: 101,
     brand: "Mango",
@@ -35,8 +36,22 @@ export const mockcartitems: CartItem[] = [
     rating: 5,
     reviews: 289,
     reviewCount: 4,
-    quantity: 1, // <-- Added quantity
-    color: "red",
+    variants: [
+      {
+        id: 1011,
+        color: { id: 1, name: "Red", hex: "#E11D48" },
+        size: "M",
+        stock: 6,
+        image: "/images/homepage/top100/photo-1.png",
+      },
+      {
+        id: 1012,
+        color: { id: 2, name: "Black", hex: "#1F2937" },
+        size: "L",
+        stock: 4,
+        image: "/images/homepage/top100/photo-1.png",
+      },
+    ],
   },
   {
     id: 102,
@@ -48,8 +63,15 @@ export const mockcartitems: CartItem[] = [
     rating: 5,
     reviews: 523,
     reviewCount: 3,
-    quantity: 2,
-    color: "red",
+    variants: [
+      {
+        id: 1021,
+        color: { id: 1, name: "Red", hex: "#E11D48" },
+        size: "S",
+        stock: 8,
+        image: "/images/homepage/top100/photo-2.png",
+      },
+    ],
   },
   {
     id: 103,
@@ -61,8 +83,15 @@ export const mockcartitems: CartItem[] = [
     rating: 5,
     reviews: 106,
     reviewCount: 0,
-    quantity: 1,
-    color: "red",
+    variants: [
+      {
+        id: 1031,
+        color: { id: 3, name: "Sky Blue", hex: "#60A5FA" },
+        size: "M",
+        stock: 5,
+        image: "/images/homepage/top100/photo-3.png",
+      },
+    ],
   },
   {
     id: 104,
@@ -74,21 +103,48 @@ export const mockcartitems: CartItem[] = [
     rating: 5,
     reviews: 121,
     reviewCount: 0,
+    variants: [
+      {
+        id: 1041,
+        color: { id: 4, name: "Mustard", hex: "#D4C257" },
+        size: "L",
+        stock: 3,
+        image: "/images/homepage/top100/photo-4.png",
+      },
+    ],
+  },
+];
+
+export const mockcartitems: CartItem[] = [
+  {
+    id: 1,
+    product: mockTopProducts[0],
+    variant: mockTopProducts[0].variants[0],
     quantity: 1,
-    color: "red",
   },
   {
-    id: 101,
-    brand: "Mango",
-    name: "Kimono & Collar - Black - Regular fit",
-    image: "/images/homepage/top100/photo-1.png",
-    price: 218,
-    originalPrice: 290,
-    rating: 5,
-    reviews: 289,
-    reviewCount: 4,
-    quantity: 1, // <-- Added quantity
-    color: "red",
+    id: 2,
+    product: mockTopProducts[1],
+    variant: mockTopProducts[1].variants[0],
+    quantity: 2,
+  },
+  {
+    id: 3,
+    product: mockTopProducts[2],
+    variant: mockTopProducts[2].variants[0],
+    quantity: 1,
+  },
+  {
+    id: 4,
+    product: mockTopProducts[3],
+    variant: mockTopProducts[3].variants[0],
+    quantity: 1,
+  },
+  {
+    id: 5,
+    product: mockTopProducts[0],
+    variant: mockTopProducts[0].variants[1],
+    quantity: 1,
   },
 ];
 
@@ -98,12 +154,22 @@ export const mockFlashSales: FlashSaleProduct[] = [
     brand: "Tonny Black",
     name: "Shoulder bag-White-Plain",
     image: "/images/homepage/flash-sales/bag.jpg",
+    images: ["/images/homepage/flash-sales/bag.jpg"],
     price: 69.99,
     originalPrice: 129.99,
     rating: 4,
     reviews: 54,
     endTime: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
     reviewCount: 0,
+    variants: [
+      {
+        id: 11,
+        color: { id: 5, name: "White", hex: "#F9FAFB" },
+        size: "One Size",
+        stock: 10,
+        image: "/images/homepage/flash-sales/bag.jpg",
+      },
+    ],
   },
   {
     id: 2,
@@ -116,6 +182,15 @@ export const mockFlashSales: FlashSaleProduct[] = [
     reviews: 54,
     endTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
     reviewCount: 0,
+    variants: [
+      {
+        id: 21,
+        color: { id: 6, name: "Beige", hex: "#E5D3B3" },
+        size: "38",
+        stock: 7,
+        image: "/images/homepage/flash-sales/shoe.png",
+      },
+    ],
   },
   {
     id: 3,
@@ -130,6 +205,15 @@ export const mockFlashSales: FlashSaleProduct[] = [
       Date.now() + 2 * 60 * 60 * 1000 + 14 * 60 * 1000,
     ).toISOString(),
     reviewCount: 0,
+    variants: [
+      {
+        id: 31,
+        color: { id: 7, name: "Pink", hex: "#F472B6" },
+        size: "One Size",
+        stock: 5,
+        image: "/images/homepage/flash-sales/bag-2.jpg",
+      },
+    ],
   },
   {
     id: 4,
@@ -142,6 +226,15 @@ export const mockFlashSales: FlashSaleProduct[] = [
     reviews: 54,
     endTime: new Date(Date.now() + 25 * 60 * 60 * 1000).toISOString(),
     reviewCount: 0,
+    variants: [
+      {
+        id: 41,
+        color: { id: 2, name: "Black", hex: "#1F2937" },
+        size: "39",
+        stock: 12,
+        image: "/images/homepage/flash-sales/shoe2.jpg",
+      },
+    ],
   },
 ];
 
@@ -172,53 +265,6 @@ export const mockTrendingProducts: TrendingProduct[] = [
   },
 ];
 
-export const mockTopProducts: Product[] = [
-  {
-    id: 101,
-    brand: "Mango",
-    name: "Kimono & Collar - Black - Regular fit",
-    image: "/images/homepage/top100/photo-1.png",
-    price: 218,
-    originalPrice: 290,
-    rating: 5,
-    reviews: 289,
-    reviewCount: 4,
-  },
-  {
-    id: 102,
-    brand: "Zara",
-    name: "Midi slip- Daily fit",
-    image: "/images/homepage/top100/photo-2.png",
-    price: 95,
-    originalPrice: 145,
-    rating: 5,
-    reviews: 523,
-    reviewCount: 3,
-  },
-  {
-    id: 103,
-    brand: "Uniqlo",
-    name: "Midi skirt Slim fit - Bohemian",
-    image: "/images/homepage/top100/photo-3.png",
-    price: 125,
-    originalPrice: 156,
-    rating: 5,
-    reviews: 106,
-    reviewCount: 0,
-  },
-  {
-    id: 104,
-    brand: "Mango dress",
-    name: "Kimono & Collar - Colorful - Night skirt fit",
-    image: "/images/homepage/top100/photo-4.png",
-
-    price: 365,
-    originalPrice: 487,
-    rating: 5,
-    reviews: 121,
-    reviewCount: 0,
-  },
-];
 export const mockMagSafeSlides: MagSafeSlide[] = [
   {
     id: 1,
@@ -235,93 +281,108 @@ export const mockMagSafeSlides: MagSafeSlide[] = [
     image: "/images/homepage/Iphone.png",
   },
 ];
-export const mockRelatedProducts: Product[] = [
-  {
-    id: 101,
-    brand: "Mango",
-    name: "Kimono & Collar - Black - Regular fit",
-    image: "/images/homepage/top100/photo-1.png",
-    price: 218,
-    originalPrice: 290,
-    rating: 5,
-    reviews: 289,
-    reviewCount: 4,
-  },
-  {
-    id: 102,
-    brand: "Zara",
-    name: "Midi slip- Daily fit",
-    image: "/images/homepage/top100/photo-2.png",
-    price: 95,
-    originalPrice: 145,
-    rating: 5,
-    reviews: 523,
-    reviewCount: 3,
-  },
-  {
-    id: 103,
-    brand: "Uniqlo",
-    name: "Midi skirt Slim fit - Bohemian",
-    image: "/images/homepage/top100/photo-3.png",
-    price: 125,
-    originalPrice: 156,
-    rating: 5,
-    reviews: 106,
-    reviewCount: 0,
-  },
-  {
-    id: 104,
-    brand: "Mango dress",
-    name: "Kimono & Collar - Colorful - Night skirt fit",
-    image: "/images/homepage/top100/photo-4.png",
 
-    price: 365,
-    originalPrice: 487,
-    rating: 5,
-    reviews: 121,
-    reviewCount: 0,
-  },
-];
+export const mockRelatedProducts: Product[] = mockTopProducts;
 
 export const recommendedProducts: Product[] = [
   {
-    id: 101,
+    id: 201,
     brand: "Zara",
     name: "SHORT PRINTED DRESS",
     price: 69.99,
     originalPrice: 129.99,
+    rating: 4.5,
+    reviews: 32,
+    reviewCount: 12,
     image: "/images/cart/recommended-1.png",
+    variants: [
+      {
+        id: 2011,
+        color: { id: 8, name: "Blue", hex: "#2563EB" },
+        size: "S",
+        stock: 6,
+        image: "/images/cart/recommended-1.png",
+      },
+    ],
   },
   {
-    id: 101,
+    id: 202,
     brand: "Zara",
     name: "SHORT PRINTED DRESS",
     price: 69.99,
     originalPrice: 129.99,
-    image: "/images/cart/recommended-1.png",
-  },
-  {
-    id: 102,
-    brand: "Zara",
-    name: "SHORT PRINTED DRESS",
-    price: 69.99,
-    originalPrice: 129.99,
+    rating: 4.5,
+    reviews: 28,
+    reviewCount: 9,
     image: "/images/cart/recommended-2.png",
+    variants: [
+      {
+        id: 2021,
+        color: { id: 9, name: "Navy", hex: "#1E3A8A" },
+        size: "M",
+        stock: 5,
+        image: "/images/cart/recommended-2.png",
+      },
+    ],
   },
   {
-    id: 103,
+    id: 203,
     brand: "Zara",
     name: "SHORT PRINTED DRESS",
     price: 69.99,
     originalPrice: 129.99,
+    rating: 4.8,
+    reviews: 41,
+    reviewCount: 15,
     image: "/images/cart/recommended-3.png",
+    variants: [
+      {
+        id: 2031,
+        color: { id: 7, name: "Pink", hex: "#EC4899" },
+        size: "S",
+        stock: 9,
+        image: "/images/cart/recommended-3.png",
+      },
+    ],
   },
   {
-    id: 104,
+    id: 204,
     brand: "Zara",
     name: "SHORT PRINTED DRESS",
     price: 69.99,
     originalPrice: 129.99,
+    rating: 4.3,
+    reviews: 19,
+    reviewCount: 6,
     image: "/images/cart/recommended-4.png",
+    variants: [
+      {
+        id: 2041,
+        color: { id: 10, name: "Mint", hex: "#34D399" },
+        size: "M",
+        stock: 4,
+        image: "/images/cart/recommended-4.png",
+      },
+    ],
+  },
+  {
+    id: 205,
+    brand: "Zara",
+    name: "SHORT PRINTED DRESS",
+    price: 69.99,
+    originalPrice: 129.99,
+    rating: 4.6,
+    reviews: 22,
+    reviewCount: 7,
+    image: "/images/cart/recommended-1.png",
+    variants: [
+      {
+        id: 2051,
+        color: { id: 8, name: "Blue", hex: "#2563EB" },
+        size: "L",
+        stock: 3,
+        image: "/images/cart/recommended-1.png",
+      },
+    ],
   },
 ];

@@ -25,7 +25,7 @@ export default function NewsletterBanner({
   return (
     <div className="w-full max-w-[580px]  mx-auto bg-[#6C8D9E] text-white rounded-lg shadow-lg px-6 py-8 text-center">
       <h2 className="text-xl md:text-2xl font-bold tracking-tight mb-2">
-        Luminae <span className="font-light">Store</span>
+        Stillform <span className="font-light">Store</span>
       </h2>
       <p className="text-xs md:text-sm text-white/90 mb-6">
         Register your email not to miss the last minutes off+ Free delivery
