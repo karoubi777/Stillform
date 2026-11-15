@@ -36,6 +36,7 @@ export const mockcartitems: CartItem[] = [
     reviews: 289,
     reviewCount: 4,
     quantity: 1, // <-- Added quantity
+    color: "red",
   },
   {
     id: 102,
@@ -47,7 +48,8 @@ export const mockcartitems: CartItem[] = [
     rating: 5,
     reviews: 523,
     reviewCount: 3,
-    quantity: 2, // <-- Added quantity (e.g., 2 items)
+    quantity: 2,
+    color: "red",
   },
   {
     id: 103,
@@ -59,7 +61,8 @@ export const mockcartitems: CartItem[] = [
     rating: 5,
     reviews: 106,
     reviewCount: 0,
-    quantity: 1, // <-- Added quantity
+    quantity: 1,
+    color: "red",
   },
   {
     id: 104,
@@ -71,7 +74,21 @@ export const mockcartitems: CartItem[] = [
     rating: 5,
     reviews: 121,
     reviewCount: 0,
+    quantity: 1,
+    color: "red",
+  },
+  {
+    id: 101,
+    brand: "Mango",
+    name: "Kimono & Collar - Black - Regular fit",
+    image: "/images/homepage/top100/photo-1.png",
+    price: 218,
+    originalPrice: 290,
+    rating: 5,
+    reviews: 289,
+    reviewCount: 4,
     quantity: 1, // <-- Added quantity
+    color: "red",
   },
 ];
 
@@ -265,35 +282,7 @@ export const mockRelatedProducts: Product[] = [
     reviewCount: 0,
   },
 ];
-export const initialCartItems: (CartItem & { color?: string })[] = [
-  {
-    id: 1,
-    brand: "Mango",
-    name: "2 Piece Mango set- Regular fit",
-    price: 25.99,
-    image: "/images/cart/mango-set.png",
-    quantity: 1,
-    color: "#EAB308", // Yellow
-  },
-  {
-    id: 2,
-    brand: "Zara",
-    name: "3 Pieces Zara set- Casual fit",
-    price: 32.99,
-    image: "/images/cart/zara-set.png",
-    quantity: 1,
-    color: "#18181B", // Black
-  },
-  {
-    id: 3,
-    brand: "Zara",
-    name: "Zara Cardigan-Regular fit",
-    price: 40.25,
-    image: "/images/cart/cardigan-blue.png",
-    quantity: 1,
-    color: "#3B82F6", // Blue
-  },
-];
+
 export const recommendedProducts: Product[] = [
   {
     id: 101,
@@ -301,7 +290,15 @@ export const recommendedProducts: Product[] = [
     name: "SHORT PRINTED DRESS",
     price: 69.99,
     originalPrice: 129.99,
-    image: "/images/cart/dress-blue.png",
+    image: "/images/cart/recommended-1.png",
+  },
+  {
+    id: 101,
+    brand: "Zara",
+    name: "SHORT PRINTED DRESS",
+    price: 69.99,
+    originalPrice: 129.99,
+    image: "/images/cart/recommended-1.png",
   },
   {
     id: 102,
@@ -309,7 +306,7 @@ export const recommendedProducts: Product[] = [
     name: "SHORT PRINTED DRESS",
     price: 69.99,
     originalPrice: 129.99,
-    image: "/images/cart/dress-gray.png",
+    image: "/images/cart/recommended-2.png",
   },
   {
     id: 103,
@@ -317,7 +314,7 @@ export const recommendedProducts: Product[] = [
     name: "SHORT PRINTED DRESS",
     price: 69.99,
     originalPrice: 129.99,
-    image: "/images/cart/dress-pink.png",
+    image: "/images/cart/recommended-3.png",
   },
   {
     id: 104,
@@ -325,6 +322,6 @@ export const recommendedProducts: Product[] = [
     name: "SHORT PRINTED DRESS",
     price: 69.99,
     originalPrice: 129.99,
-    image: "/images/cart/dress-green.png",
+    image: "/images/cart/recommended-4.png",
   },
 ];

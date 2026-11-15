@@ -14,6 +14,7 @@ export type Product = {
 };
 export type CartItem = Product & {
   quantity: number;
+  color:string
 };
 
 export type FlashSaleProduct = Product & {
