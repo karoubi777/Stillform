@@ -10,6 +10,9 @@ export type Product = {
   reviewCount: number;
   images?: string[];
   brand: string;
+  category?: string;
+  model?: string;
+  style?: string;
   variants: ProductVariant[];
 };
 
@@ -108,3 +111,46 @@ export type ShippingMethod = {
   available: boolean;
   supportedCountries?: CountryOption["code"][];
 };
+export type SortOption =
+  | "popular"
+  | "price-asc"
+  | "price-desc"
+  | "rating"
+  | "discount";
+
+export type ProductFilterState = {
+  searchQuery: string;
+  category: string;
+  brandSearch: string;
+  brands: string[];
+  models: string[];
+  styles: string[];
+  colors: string[];
+  sizes: string[];
+  minPrice: number;
+  maxPrice: number;
+};
+export type ProductDetails = {
+  productId: number;
+  description: string;
+  specs: string[];
+  composition: string;
+  outerShell: string;
+  careInstructions: string[];
+};
+
+export type ProductReview = {
+  id: number;
+  title: string;
+  author: string;
+  rating: number;
+  date: string;
+  advantages: string;
+  disadvantages: string;
+  comment: string;
+  images?: string[];
+  likes: number;
+  dislikes: number;
+  userVote?: "like" | "dislike" | null;
+};
+export type DetailTab = "details" | "reviews" | "shipping";

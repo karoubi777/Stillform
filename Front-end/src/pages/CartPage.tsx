@@ -421,7 +421,7 @@ export default function CartPage() {
                 {isSubmittingOrder ? "Processing..." : "Place Order"}
               </button>
             </div>
-          </div>
+          </div >
         </div>
       )}
     </div>
