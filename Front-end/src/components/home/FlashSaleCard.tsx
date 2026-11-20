@@ -1,21 +1,25 @@
+import { Link } from "react-router-dom";
 import { useCountdown } from "../../hooks/useCountdown";
 import type { FlashSaleProduct } from "../../types/product";
 
-// Inherit directly from FlashSaleProduct
 type FlashSaleCardProps = FlashSaleProduct;
 
-export default function FlashSaleCard({
-  brand,
-  name,
-  image,
-  price,
-  originalPrice,
-  rating,
-  reviews = 0, // Default fallback if undefined
-  endTime,
-}: FlashSaleCardProps) {
+export default function FlashSaleCard(product: FlashSaleCardProps) {
+  const {
+    id,
+    brand,
+    name,
+    image,
+    price,
+    originalPrice,
+    rating,
+    reviews = 0,
+    endTime,
+  } = product;
+
   const time = useCountdown(endTime);
-  const discount = Math.round((1 - price / originalPrice) * 100);
+  const discount =
+    originalPrice > price ? Math.round((1 - price / originalPrice) * 100) : 0;
 
   return (
     <article className="flex flex-col justify-between rounded-2xl bg-white p-4 border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-lg transition-shadow w-full max-w-[396px] lg:max-w-[300px] h-[380px] mx-auto">
@@ -46,21 +50,29 @@ export default function FlashSaleCard({
         </div>
       </div>
 
-      {/* Image */}
-      <div className="my-auto flex flex-1 w-full min-h-0 items-center justify-center p-2">
+      {/* Image Link */}
+      <Link
+        to={`/product/${id}`}
+        state={{ product }}
+        className="my-auto flex flex-1 w-full min-h-0 items-center justify-center p-2"
+      >
         <img
           src={image}
           alt={name}
           className="h-full w-full object-contain hover:scale-105 transition-transform duration-200"
         />
-      </div>
+      </Link>
 
       {/* Info */}
       <div className="pt-2 shrink-0">
-        <h4 className="text-sm sm:text-base font-bold text-gray-900 leading-tight truncate">
-          {brand}
-        </h4>
-        <p className="mt-1 truncate text-xs sm:text-sm text-gray-500">{name}</p>
+        <Link to={`/product/${id}`} state={{ product }} className="block">
+          <h4 className="text-sm sm:text-base font-bold text-gray-900 leading-tight truncate hover:underline">
+            {brand}
+          </h4>
+          <p className="mt-1 truncate text-xs sm:text-sm text-gray-500">
+            {name}
+          </p>
+        </Link>
 
         <div className="mt-1.5 flex items-center gap-1.5 text-xs">
           <span className="text-[#FFB900]">
@@ -73,12 +85,16 @@ export default function FlashSaleCard({
           <span className="text-sm sm:text-base font-bold text-[#FF3B16]">
             ${price.toFixed(2)}
           </span>
-          <span className="text-xs text-gray-400 line-through">
-            ${originalPrice.toFixed(2)}
-          </span>
-          <span className="rounded bg-[#FF3B16] px-1.5 py-0.5 text-[10px] font-bold text-white leading-tight">
-            -{discount}%
-          </span>
+          {originalPrice > price && (
+            <span className="text-xs text-gray-400 line-through">
+              ${originalPrice.toFixed(2)}
+            </span>
+          )}
+          {discount > 0 && (
+            <span className="rounded bg-[#FF3B16] px-1.5 py-0.5 text-[10px] font-bold text-white leading-tight">
+              -{discount}%
+            </span>
+          )}
         </div>
       </div>
     </article>

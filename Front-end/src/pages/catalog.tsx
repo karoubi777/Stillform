@@ -14,6 +14,7 @@ export default function Catalogpage() {
   const [searchParams] = useSearchParams();
   const initialCategory = searchParams.get("category") || "All";
   const initialSearch = searchParams.get("q") || "";
+  const initialGender = searchParams.get("gender") || "All";
 
   // 1. Source product list (replace with backend fetch later; never mutate directly)
   const [rawProducts] = useState<Product[]>(mockCatalogProducts);
@@ -44,6 +45,7 @@ export default function Catalogpage() {
   const [filters, setFilters] = useState<ProductFilterState>({
     searchQuery: initialSearch,
     category: initialCategory,
+    gender: initialGender,
     brandSearch: "",
     brands: [],
     models: [],
@@ -58,13 +60,18 @@ export default function Catalogpage() {
   useEffect(() => {
     setFilters((prev) => ({
       ...prev,
+      gender: searchParams.get("gender") || "All",
       category: searchParams.get("category") || "All",
       searchQuery: searchParams.get("q") || "",
     }));
+    const urlSort = searchParams.get("sort") as SortOption | null;
+    if (urlSort) setSortBy(urlSort);
     setCurrentPage(1);
   }, [searchParams]);
 
-  const [sortBy, setSortBy] = useState<SortOption>("popular");
+  const [sortBy, setSortBy] = useState<SortOption>(
+    (searchParams.get("sort") as SortOption) || "popular",
+  );
   const [pageSize, setPageSize] = useState<number>(9);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
@@ -78,6 +85,7 @@ export default function Catalogpage() {
     setFilters({
       searchQuery: initialSearch,
       category: initialCategory,
+      gender: initialGender,
       brandSearch: "",
       brands: [],
       models: [],
@@ -96,6 +104,18 @@ export default function Catalogpage() {
 
     const filtered = rawProducts.filter((product) => {
       if (
+        filters.gender !== "All" &&
+        product.gender?.toLowerCase() !== filters.gender.toLowerCase()
+      ) {
+        return false;
+      }
+      if (
+        filters.category !== "All" &&
+        product.category?.toLowerCase() !== filters.category.toLowerCase()
+      ) {
+        return false;
+      }
+      if (
         filters.category &&
         filters.category !== "All" &&
         product.category?.toLowerCase() !== filters.category.toLowerCase()
@@ -107,7 +127,10 @@ export default function Catalogpage() {
         const matchesQuery =
           product.name.toLowerCase().includes(q) ||
           product.brand.toLowerCase().includes(q) ||
-          (product.description?.toLowerCase().includes(q) ?? false);
+          (product.description?.toLowerCase().includes(q) ?? false) ||
+          (product.model?.toLowerCase().includes(q) ?? false) ||
+          (product.style?.toLowerCase().includes(q) ?? false) ||
+          (product.category?.toLowerCase().includes(q) ?? false);
         if (!matchesQuery) return false;
       }
 

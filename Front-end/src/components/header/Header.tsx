@@ -2,10 +2,14 @@ import { useState, useRef, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import MegaMenu from "./MegaMenu";
 import CartDropdown from "./CartDropdown";
-import MobileCartSheet from "./MobileCartSheet"; // <-- Import separated mobile sheet
+import MobileCartSheet from "./MobileCartSheet";
 import { Link } from "react-router-dom";
 import type { Product, CartItem } from "../../types/product";
-import { CATEGORIES } from "../../data/header";
+import {
+  CATEGORIES,
+  buildCatalogUrl,
+  type CategoryName,
+} from "../../data/header";
 
 type HeaderProps = {
   products?: Product[];
@@ -45,11 +49,13 @@ export default function Header({
   }, []);
 
   // 2. Mega Menu Hover Timers
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<CategoryName | null>(
+    null,
+  );
   const hoverTimerRef = useRef<number | null>(null);
   const closeTimerRef = useRef<number | null>(null);
 
-  function handleMouseEnter(category: string) {
+  function handleMouseEnter(category: CategoryName) {
     if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
     hoverTimerRef.current = window.setTimeout(() => {
       setActiveCategory(category);
@@ -73,10 +79,10 @@ export default function Header({
     (acc, item) => acc + (item.quantity || 1),
     0,
   );
- const totalCartCost = cartItems.reduce(
-  (acc, item) => acc + item.product.price * (item.quantity || 1),
-  0,
-);
+  const totalCartCost = cartItems.reduce(
+    (acc, item) => acc + item.product.price * (item.quantity || 1),
+    0,
+  );
 
   return (
     <>
@@ -198,19 +204,50 @@ export default function Header({
               <a
                 href="#"
                 aria-label="Instagram"
-                className="hover:text-gray-600"
+                className="hover:text-gray-700 transition-colors"
               >
-                📷
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.8}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                </svg>
               </a>
+
               <a
                 href="#"
                 aria-label="Facebook"
-                className="hover:text-gray-600 font-bold"
+                className="hover:text-gray-700 transition-colors"
               >
-                f
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4v-8.5z" />
+                </svg>
               </a>
-              <a href="#" aria-label="Telegram" className="hover:text-gray-600">
-                ✈
+
+              {/* Telegram */}
+              <a
+                href="#"
+                aria-label="Telegram"
+                className="hover:text-gray-700 transition-colors"
+              >
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+                </svg>
               </a>
             </div>
           </div>
@@ -301,10 +338,11 @@ export default function Header({
           >
             <nav className="flex items-center justify-between gap-4 h-[42px] overflow-x-auto whitespace-nowrap text-xs text-gray-600 scrollbar-hide">
               {CATEGORIES.map((cat) => (
-                <a
+                <Link
                   key={cat}
-                  href={`#${cat.toLowerCase()}`}
+                  to={buildCatalogUrl(cat)}
                   onMouseEnter={() => handleMouseEnter(cat)}
+                  onClick={() => setActiveCategory(null)}
                   className={`shrink-0 py-2 transition-colors cursor-pointer ${
                     activeCategory === cat
                       ? "text-[#FF8A00] font-semibold"
@@ -312,14 +350,15 @@ export default function Header({
                   }`}
                 >
                   {cat}
-                </a>
+                </Link>
               ))}
             </nav>
 
             <MegaMenu
-              isOpen={activeCategory === "Woman"}
+              activeCategory={activeCategory}
               onMouseEnter={clearCloseTimer}
               onMouseLeave={handleMouseLeave}
+              onSelectLink={() => setActiveCategory(null)}
             />
           </div>
         </div>

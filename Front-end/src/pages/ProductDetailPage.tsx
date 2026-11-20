@@ -278,7 +278,7 @@ export default function ProductDetailPage({
           Product not found
         </p>
         <Link
-          to="/products"
+          to="/catalog"
           className="text-xs font-semibold text-[#3B72D9] hover:underline"
         >
           Back to catalog

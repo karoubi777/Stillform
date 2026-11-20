@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import EmailConfirmationModal from "../components/EmailConfirmationModal";
+import EmailConfirmationModal from "../components/shared/EmailConfirmationModal";
 export default function ForgotPasswordPage() {
   const navigate = useNavigate();
 

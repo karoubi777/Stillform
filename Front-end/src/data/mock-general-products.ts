@@ -5,7 +5,7 @@ export const mockCatalogProducts: Product[] = [
     id: 301,
     brand: "Mango",
     name: "Kimono & Caftan - Black - Casual",
-    category: "Woman",
+    category: "CLOTHES",
     model: "Short",
     style: "Casual",
     image: "/images/general-products/photo.png",
@@ -14,6 +14,7 @@ export const mockCatalogProducts: Product[] = [
     rating: 5,
     reviews: 289,
     reviewCount: 289,
+    gender: "Women",
     variants: [
       {
         id: 3011,
@@ -35,7 +36,7 @@ export const mockCatalogProducts: Product[] = [
     id: 302,
     brand: "Uniqlo",
     name: "Midi atlas Slim fit - bohemian",
-    category: "Woman",
+    category: "cloths",
     model: "Mid-length",
     style: "Bohemian",
     image: "/images/general-products/photo1.png",
@@ -44,6 +45,7 @@ export const mockCatalogProducts: Product[] = [
     rating: 4,
     reviews: 86,
     reviewCount: 86,
+    gender: "men",
     variants: [
       {
         id: 3021,
@@ -65,7 +67,7 @@ export const mockCatalogProducts: Product[] = [
     id: 303,
     brand: "Zara",
     name: "Kimono & Caftan - Black - Bohemian",
-    category: "Woman",
+    category: "cloths",
     model: "Regular Fit",
     style: "Bohemian",
     image: "/images/general-products/photo2.png",
@@ -74,6 +76,7 @@ export const mockCatalogProducts: Product[] = [
     rating: 5,
     reviews: 526,
     reviewCount: 526,
+    gender: "Women",
     variants: [
       {
         id: 3031,
@@ -88,7 +91,7 @@ export const mockCatalogProducts: Product[] = [
     id: 304,
     brand: "Ralph Lauren",
     name: "Blouse - Minimalist",
-    category: "Woman",
+    category: "cloths",
     model: "Regular Fit",
     style: "Minimalist",
     image: "/images/general-products/photo3.png",
@@ -97,6 +100,7 @@ export const mockCatalogProducts: Product[] = [
     rating: 3.5,
     reviews: 56,
     reviewCount: 56,
+    gender: "Women",
     variants: [
       {
         id: 3041,
@@ -111,7 +115,7 @@ export const mockCatalogProducts: Product[] = [
     id: 305,
     brand: "Gucci",
     name: "Bikini & seaside - Casual",
-    category: "Woman",
+    category: "cloths",
     model: "Party Dresses",
     style: "Casual",
     image: "/images/general-products/photo4.png",
@@ -120,6 +124,7 @@ export const mockCatalogProducts: Product[] = [
     rating: 5,
     reviews: 150,
     reviewCount: 150,
+    gender: "Woman",
     variants: [
       {
         id: 3051,
@@ -134,7 +139,7 @@ export const mockCatalogProducts: Product[] = [
     id: 306,
     brand: "Rachel Pally",
     name: "Dress - Beige - Shift - Casual",
-    category: "Woman",
+    category: "cloths",
     model: "Party Dresses",
     style: "Casual",
     image: "/images/general-products/photo5.png",
@@ -143,6 +148,7 @@ export const mockCatalogProducts: Product[] = [
     rating: 5,
     reviews: 200,
     reviewCount: 200,
+    gender: "Women",
     variants: [
       {
         id: 3061,
@@ -157,7 +163,7 @@ export const mockCatalogProducts: Product[] = [
     id: 307,
     brand: "Calvin Klein",
     name: "Shirt-oversize - Minimalist",
-    category: "Woman",
+    category: "cloths",
     model: "Regular Fit",
     style: "Minimalist",
     image: "/images/general-products/photo6.png",
@@ -166,6 +172,7 @@ export const mockCatalogProducts: Product[] = [
     rating: 4.5,
     reviews: 300,
     reviewCount: 300,
+    gender: "Women",
     variants: [
       {
         id: 3071,
@@ -180,7 +187,7 @@ export const mockCatalogProducts: Product[] = [
     id: 308,
     brand: "Zara",
     name: "Sweater - Black & White - Minimalist",
-    category: "Woman",
+    category: "cloths",
     model: "Sweater",
     style: "Minimalist",
     image: "/images/general-products/photo7.png",
@@ -189,6 +196,7 @@ export const mockCatalogProducts: Product[] = [
     rating: 5,
     reviews: 120,
     reviewCount: 120,
+    gender: "Women",
     variants: [
       {
         id: 3081,
@@ -203,7 +211,7 @@ export const mockCatalogProducts: Product[] = [
     id: 309,
     brand: "Uniqlo",
     name: "Sweater - Casual",
-    category: "Woman",
+    category: "cloths",
     model: "Sweater",
     style: "Casual",
     image: "/images/general-products/photo2.png",
@@ -212,6 +220,7 @@ export const mockCatalogProducts: Product[] = [
     rating: 4.5,
     reviews: 289,
     reviewCount: 289,
+    gender: "Women",
     variants: [
       {
         id: 3091,

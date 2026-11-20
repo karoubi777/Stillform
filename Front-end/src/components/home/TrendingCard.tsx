@@ -1,4 +1,7 @@
+import { Link } from "react-router-dom";
+
 type TrendingCardProps = {
+  id?: number | string;
   title: string;
   description: string;
   price: number;
@@ -7,12 +10,17 @@ type TrendingCardProps = {
 };
 
 export default function TrendingCard({
+  id,
   title,
   description,
   price,
   image,
   isNewArrival = false,
 }: TrendingCardProps) {
+  const targetUrl = id
+    ? `/catalog/${id}`
+    : `/catalog?q=${encodeURIComponent(title)}`;
+
   return (
     <article
       className="
@@ -24,14 +32,16 @@ export default function TrendingCard({
       "
     >
       {/* Product Image Area */}
-      <div className="relative flex-1 w-full min-h-0 overflow-hidden">
+      <Link
+        to={targetUrl}
+        className="relative flex-1 w-full min-h-0 overflow-hidden block"
+      >
         <img
           src={image}
           alt={title}
           className="h-full w-full object-cover object-top hover:scale-105 transition-transform duration-300"
         />
 
-        {/* Conditional "New Arrivals" Tag */}
         {isNewArrival && (
           <span className="absolute left-3 top-3 flex items-center gap-1.5 rounded bg-[#00B96B] px-2.5 py-1 text-[11px] font-medium text-white shadow-sm">
             <svg
@@ -51,7 +61,7 @@ export default function TrendingCard({
             New Arrivals
           </span>
         )}
-      </div>
+      </Link>
 
       {/* Product Information Footer */}
       <div className="flex h-[80px] shrink-0 items-center justify-between gap-3 px-5 py-3 text-white bg-[#262626]">
@@ -64,13 +74,12 @@ export default function TrendingCard({
           </p>
         </div>
 
-        {/* Shop Now Button */}
-        <a
-          href="#"
+        <Link
+          to={targetUrl}
           className="flex shrink-0 items-center justify-center whitespace-nowrap rounded border border-neutral-500/80 px-3.5 py-2 text-xs font-medium text-neutral-200 transition-colors hover:border-white hover:bg-white hover:text-[#262626]"
         >
           ${price.toFixed(0)}&nbsp; Shop Now
-        </a>
+        </Link>
       </div>
     </article>
   );

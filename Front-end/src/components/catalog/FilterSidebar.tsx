@@ -77,6 +77,7 @@ export default function FilterSidebar({
   onCloseMobile,
 }: FilterSidebarProps) {
   const [openSections, setOpenSections] = useState({
+    gender: true,
     brand: true,
     model: true,
     style: true,
@@ -160,6 +161,37 @@ export default function FilterSidebar({
             ✕
           </button>
         </div>
+      </div>
+      {/* 1. GENDER */}
+      <div className="py-4">
+        <SectionHeader
+          title="GENDER"
+          isOpen={openSections.gender}
+          onToggle={() => toggleSection("gender")}
+        />
+        {openSections.gender && (
+          <div className="mt-3 flex flex-col gap-2.5">
+            {["Men", "Women", "Unisex"].map((gender) => (
+              <label
+                key={gender}
+                className="flex items-center gap-2 text-xs text-gray-600 cursor-pointer hover:text-gray-900"
+              >
+                <input
+                  type="checkbox"
+                  checked={filters.gender === gender}
+                  onChange={() =>
+                    onChange({
+                      ...filters,
+                      gender: filters.gender === gender ? "All" : gender,
+                    })
+                  }
+                  className="w-3.5 h-3.5 rounded text-[#3B72D9] focus:ring-0"
+                />
+                <span>{gender}</span>
+              </label>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 1. BRAND (Search + Checkboxes) */}

@@ -15,7 +15,7 @@ import ShippingPaymentStep, {
 } from "../components/cart/ShippingPaymentStep";
 import ConfirmationStep from "../components/cart/ConfirmationStep";
 import OrderSummary from "../components/cart/OrderSummary";
-import RecommendedProducts from "../components/cart/RecommendedProducts";
+import RecommendedProducts from "../components/shared/RecommendedProducts";
 import type {
   CartItem,
   CheckoutStep,

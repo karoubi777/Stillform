@@ -1,6 +1,7 @@
 export type Product = {
   id: number;
   name: string;
+  gender: string;
   description?: string;
   originalPrice: number;
   price: number;
@@ -120,6 +121,7 @@ export type SortOption =
 
 export type ProductFilterState = {
   searchQuery: string;
+  gender: string;
   category: string;
   brandSearch: string;
   brands: string[];

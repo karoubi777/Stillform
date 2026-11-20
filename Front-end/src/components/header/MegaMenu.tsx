@@ -1,18 +1,27 @@
-import { WOMAN_DROPDOWN_COLUMNS } from "../../data/header"; // Adjust path if needed
-import womanPromoImage from "../../assets/home/image-363.png";
+import { Link } from "react-router-dom";
+import {
+  CATEGORY_MENUS,
+  buildCatalogUrl,
+  type CategoryName,
+} from "../../data/header";
 
 type MegaMenuProps = {
-  isOpen: boolean;
+  activeCategory: CategoryName | null;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
+  onSelectLink: () => void;
 };
 
 export default function MegaMenu({
-  isOpen,
+  activeCategory,
   onMouseEnter,
   onMouseLeave,
+  onSelectLink,
 }: MegaMenuProps) {
-  if (!isOpen) return null;
+  if (!activeCategory) return null;
+
+  const menuConfig = CATEGORY_MENUS[activeCategory];
+  if (!menuConfig) return null;
 
   return (
     <div
@@ -23,22 +32,32 @@ export default function MegaMenu({
       <div className="flex gap-8 justify-between">
         {/* 4 Text Columns */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 flex-1">
-          {WOMAN_DROPDOWN_COLUMNS.map((col, colIndex) => (
+          {menuConfig.columns.map((col, colIndex) => (
             <div key={colIndex} className="flex flex-col gap-6">
               {col.map((section) => (
                 <div key={section.title} className="flex flex-col gap-2.5">
-                  <h3 className="text-xs font-bold tracking-wider text-gray-900 uppercase">
+                  <Link
+                    to={buildCatalogUrl(activeCategory, {
+                      sectionCategory: section.categoryParam,
+                    })}
+                    onClick={onSelectLink}
+                    className="text-xs font-bold tracking-wider text-gray-900 uppercase hover:text-[#FF8A00] transition-colors"
+                  >
                     {section.title}
-                  </h3>
+                  </Link>
                   <ul className="flex flex-col gap-1.5">
                     {section.items.map((item) => (
                       <li key={item}>
-                        <a
-                          href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
+                        <Link
+                          to={buildCatalogUrl(activeCategory, {
+                            sectionCategory: section.categoryParam,
+                            query: item,
+                          })}
+                          onClick={onSelectLink}
                           className="text-[12px] text-gray-500 hover:text-[#FF8A00] hover:underline transition-colors block"
                         >
                           {item}
-                        </a>
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -48,14 +67,16 @@ export default function MegaMenu({
           ))}
         </div>
 
-        {/* Right Promo Model Photo (Desktop Only) */}
-        <div className="hidden lg:block w-[280px] shrink-0 self-stretch rounded-xl overflow-hidden shadow-sm">
-          <img
-            src={womanPromoImage}
-            alt="Woman fashion collection"
-            className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-300"
-          />
-        </div>
+        {/* Right Promo Photo (Only shown when that category defines promoImage) */}
+        {menuConfig.promoImage && (
+          <div className="hidden lg:block w-[280px] shrink-0 self-stretch rounded-xl overflow-hidden shadow-sm">
+            <img
+              src={menuConfig.promoImage}
+              alt={menuConfig.promoAlt || `${activeCategory} collection`}
+              className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import type { CartItem } from "../../types/product";
-
+import { Link } from "react-router-dom";
 interface CartItemsListProps {
   items: CartItem[];
   onQuantityChange: (id: number, delta: number) => void;
@@ -39,17 +39,26 @@ export default function CartItemsList({
                 key={item.id}
                 className="py-5 flex flex-wrap lg:flex-nowrap items-center justify-between gap-y-4 lg:gap-y-0"
               >
-                {/* Image, Title, Color & Size */}
                 <div className="w-[calc(100%-72px)] lg:w-[44%] lg:pr-4 flex items-center gap-3 min-w-0">
-                  <img
-                    src={thumbnail}
-                    alt={item.product.name}
-                    className="w-14 h-16 rounded object-contain bg-[#F5F6F6] p-1 shrink-0"
-                  />
+                  <Link
+                    to={`/product/${item.product.id}`}
+                    state={{ product: item.product }}
+                    className="shrink-0"
+                  >
+                    <img
+                      src={thumbnail}
+                      alt={item.product.name}
+                      className="w-14 h-16 rounded object-contain bg-[#F5F6F6] p-1 hover:opacity-85 transition"
+                    />
+                  </Link>
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
+                    <Link
+                      to={`/product/${item.product.id}`}
+                      state={{ product: item.product }}
+                      className="block text-xs sm:text-sm font-semibold text-gray-900 truncate hover:underline"
+                    >
                       {item.product.name}
-                    </h3>
+                    </Link>
                     <div className="flex items-center gap-2 mt-1 text-[11px] text-gray-500">
                       <span className="flex items-center gap-1.5">
                         <span>Color:</span>

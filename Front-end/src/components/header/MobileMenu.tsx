@@ -1,94 +1,35 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import {
+  CATEGORIES,
+  CATEGORY_MENUS,
+  buildCatalogUrl,
+  type CategoryName,
+} from "../../data/header";
 
 type MenuProps = {
   isOpen: boolean;
   onClose: () => void;
 };
 
-const categories = [
-  "Woman",
-  "Male",
-  "Mother-Child",
-  "Home & Furniture",
-  "Super market",
-  "Cosmetics",
-  "Shoe & Bag",
-  "Electronic",
-  "Sport & Outdoor",
-  "Best seller",
+const BOTTOM_LINKS = [
+  { label: "Login/Register", to: "/auth" },
+  { label: "Help & Support", to: "/help" },
+  { label: "About us", to: "/about" },
+  { label: "Blog", to: "/blog" },
 ];
-
-const womanGroups = [
-  {
-    title: "SHOE & BAG",
-    items: ["Casual Shoes", "Boots", "Sandals", "Slippers"],
-  },
-  {
-    title: "HOME TEXTILE",
-    items: ["Bedding", "Pillows", "Handkerchief Towels", "Curtain"],
-  },
-  {
-    title: "LUXURY & DESIGNER",
-    items: ["Towels", "Bathroom Scales", "Bath Mats", "Shower Caps"],
-  },
-  {
-    title: "COSMETICS",
-    items: [
-      "Shampoo and Conditioner",
-      "Styling Products",
-      "Hair Accessories",
-      "Men's Grooming",
-    ],
-  },
-  {
-    title: "PARTY SUPPLIES",
-    items: ["Event & Party", "Christmas", "Artificial Decorations", "Wedding"],
-  },
-  {
-    title: "CLOTHES",
-    items: [
-      "Bottoms",
-      "Women's Clothing",
-      "T-Shirts and Tops",
-      "Dresses",
-      "Outerwear",
-      "Formal Wear",
-    ],
-  },
-  {
-    title: "SPORT & OUTDOORS",
-    items: [
-      "Team Sports",
-      "Water Sports",
-      "Outdoor Recreation",
-      "Fitness Equipment",
-    ],
-  },
-  {
-    title: "OUTDOOR",
-    items: [
-      "Casual Wear",
-      "Seasonal Collections",
-      "Sports Bras",
-      "Workout Tops",
-      "Fall Wardrobe",
-    ],
-  },
-];
-
-const bottomLinks = ["Login/Register", "Help & Support", "About us", "Blog"];
 
 export default function MobileMenu({ isOpen, onClose }: MenuProps) {
-  const [activeCategory, setActiveCategory] = useState("Woman");
+  const [activeCategory, setActiveCategory] = useState<CategoryName | "">(
+    "Women",
+  );
 
-  // Close on Escape key
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
     }
     if (isOpen) {
       window.addEventListener("keydown", handleKeyDown);
-      // Prevent background scrolling while menu is open
       document.body.style.overflow = "hidden";
     }
     return () => {
@@ -99,28 +40,18 @@ export default function MobileMenu({ isOpen, onClose }: MenuProps) {
 
   if (!isOpen) return null;
 
-  function handleCategoryClick(category: string) {
+  function handleCategoryClick(category: CategoryName) {
     setActiveCategory((current) => (current === category ? "" : category));
   }
 
   return (
-    /* OVERLAY BACKDROP: Dims the rest of the site on desktop and tablet */
     <div className="fixed inset-0 z-50 flex bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in">
-      {/* DRAWER CONTAINER:
-          - Mobile: w-full
-          - Tablet / Desktop: w-[400px] sliding from the left
-      */}
-      <aside
-        className="
-          relative h-full flex flex-col justify-between overflow-y-auto
-          w-full sm:w-[400px] bg-[#f5f5f5] text-[#222] shadow-2xl
-          animate-in slide-in-from-left duration-200
-        "
-      >
+      <aside className="relative h-full flex flex-col justify-between overflow-y-auto w-full sm:w-[400px] bg-[#f5f5f5] text-[#222] shadow-2xl animate-in slide-in-from-left duration-200">
         {/* TOP BAR / CLOSE BUTTON */}
         <div>
           <header className="sticky top-0 z-10 flex h-[52px] items-center justify-center bg-white border-b border-gray-100">
             <button
+              type="button"
               onClick={onClose}
               aria-label="Close menu"
               className="absolute left-3 text-2xl font-light h-full flex items-center justify-center p-2 hover:text-black active:scale-90 transition"
@@ -132,46 +63,74 @@ export default function MobileMenu({ isOpen, onClose }: MenuProps) {
 
           {/* CATEGORIES LIST */}
           <nav className="px-4 pt-3 pb-4">
-            {categories.map((category) => {
+            {CATEGORIES.map((category) => {
               const isActive = activeCategory === category;
+              const menuConfig = CATEGORY_MENUS[category];
+              const sections = menuConfig.columns.flat();
 
               return (
                 <div key={category}>
                   <button
+                    type="button"
                     onClick={() => handleCategoryClick(category)}
                     aria-expanded={isActive}
-                    className={`block w-full py-2.5 text-left text-xs transition-colors ${
+                    className={`flex items-center justify-between w-full py-2.5 text-left text-xs transition-colors ${
                       isActive
                         ? "font-bold text-[#f47721]"
                         : "text-gray-600 hover:text-black"
                     }`}
                   >
-                    {category}
+                    <span>{category}</span>
+                    <span className="text-[10px] text-gray-400">
+                      {isActive ? "▾" : "▸"}
+                    </span>
                   </button>
 
-                  {/* WOMAN ACCORDION (2 columns sub-categories) */}
-                  {isActive && category === "Woman" && (
-                    <div className="grid grid-cols-2 gap-x-5 gap-y-5 rounded bg-white px-4 py-4 my-1 shadow-xs">
-                      {womanGroups.map((group) => (
-                        <div key={group.title}>
-                          <h3 className="mb-2 text-[10px] font-bold tracking-wider uppercase text-gray-900 leading-tight">
-                            {group.title}
-                          </h3>
+                  {/* EXPANDED SUB-CATEGORIES ACCORDION */}
+                  {isActive && (
+                    <div className="rounded bg-white px-4 py-4 my-1 shadow-xs">
+                      <div className="mb-3 pb-2 border-b border-gray-100">
+                        <Link
+                          to={buildCatalogUrl(category)}
+                          onClick={onClose}
+                          className="text-[11px] font-bold text-[#3B72D9] hover:underline"
+                        >
+                          View all {category} &rsaquo;
+                        </Link>
+                      </div>
 
-                          <ul className="flex flex-col gap-1.5">
-                            {group.items.map((item) => (
-                              <li key={item}>
-                                <a
-                                  href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
-                                  className="text-[10px] text-gray-500 hover:text-black transition-colors block"
-                                >
-                                  {item}
-                                </a>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
+                      <div className="grid grid-cols-2 gap-x-5 gap-y-5">
+                        {sections.map((group) => (
+                          <div key={group.title}>
+                            <Link
+                              to={buildCatalogUrl(category, {
+                                sectionCategory: group.categoryParam,
+                              })}
+                              onClick={onClose}
+                              className="block mb-2 text-[10px] font-bold tracking-wider uppercase text-gray-900 leading-tight hover:text-[#f47721]"
+                            >
+                              {group.title}
+                            </Link>
+
+                            <ul className="flex flex-col gap-1.5">
+                              {group.items.map((item) => (
+                                <li key={item}>
+                                  <Link
+                                    to={buildCatalogUrl(category, {
+                                      sectionCategory: group.categoryParam,
+                                      query: item,
+                                    })}
+                                    onClick={onClose}
+                                    className="text-[10px] text-gray-500 hover:text-black transition-colors block"
+                                  >
+                                    {item}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -182,20 +141,22 @@ export default function MobileMenu({ isOpen, onClose }: MenuProps) {
 
         {/* BOTTOM AUTH & INFO LINKS */}
         <div className="bg-white px-4 py-2 border-t border-gray-100 mt-auto">
-          {bottomLinks.map((link) => (
-            <a
-              key={link}
-              href="#"
+          {BOTTOM_LINKS.map((link) => (
+            <Link
+              key={link.label}
+              to={link.to}
+              onClick={onClose}
               className="flex min-h-[42px] items-center justify-between border-b border-gray-100 last:border-0 text-xs font-semibold text-gray-800 hover:bg-gray-50 px-1 transition"
             >
-              {link}
-              <span className="text-base font-normal text-gray-400">›</span>
-            </a>
+              {link.label}
+              <span className="text-base font-normal text-gray-400">
+                &rsaquo;
+              </span>
+            </Link>
           ))}
         </div>
       </aside>
 
-      {/* Clicking the backdrop outside the drawer closes it */}
       <div className="flex-1 hidden sm:block" onClick={onClose} />
     </div>
   );

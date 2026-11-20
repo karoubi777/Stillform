@@ -36,6 +36,7 @@ export const mockTopProducts: Product[] = [
     rating: 5,
     reviews: 289,
     reviewCount: 4,
+    gender: "Women",
     variants: [
       {
         id: 1011,
@@ -63,6 +64,7 @@ export const mockTopProducts: Product[] = [
     rating: 5,
     reviews: 523,
     reviewCount: 3,
+    gender: "womman",
     variants: [
       {
         id: 1021,
@@ -83,6 +85,7 @@ export const mockTopProducts: Product[] = [
     rating: 5,
     reviews: 106,
     reviewCount: 0,
+    gender: "womman",
     variants: [
       {
         id: 1031,
@@ -103,6 +106,7 @@ export const mockTopProducts: Product[] = [
     rating: 5,
     reviews: 121,
     reviewCount: 0,
+    gender: "womman",
     variants: [
       {
         id: 1041,
@@ -161,6 +165,7 @@ export const mockFlashSales: FlashSaleProduct[] = [
     reviews: 54,
     endTime: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
     reviewCount: 0,
+    gender: "woman",
     variants: [
       {
         id: 11,
@@ -182,6 +187,7 @@ export const mockFlashSales: FlashSaleProduct[] = [
     reviews: 54,
     endTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
     reviewCount: 0,
+    gender: "woman",
     variants: [
       {
         id: 21,
@@ -205,6 +211,7 @@ export const mockFlashSales: FlashSaleProduct[] = [
       Date.now() + 2 * 60 * 60 * 1000 + 14 * 60 * 1000,
     ).toISOString(),
     reviewCount: 0,
+    gender: "woman",
     variants: [
       {
         id: 31,
@@ -226,6 +233,7 @@ export const mockFlashSales: FlashSaleProduct[] = [
     reviews: 54,
     endTime: new Date(Date.now() + 25 * 60 * 60 * 1000).toISOString(),
     reviewCount: 0,
+    gender: "woman",
     variants: [
       {
         id: 41,
@@ -295,6 +303,7 @@ export const recommendedProducts: Product[] = [
     reviews: 32,
     reviewCount: 12,
     image: "/images/cart/recommended-1.png",
+    gender: "woman",
     variants: [
       {
         id: 2011,
@@ -315,6 +324,7 @@ export const recommendedProducts: Product[] = [
     reviews: 28,
     reviewCount: 9,
     image: "/images/cart/recommended-2.png",
+    gender: "woman",
     variants: [
       {
         id: 2021,
@@ -335,6 +345,7 @@ export const recommendedProducts: Product[] = [
     reviews: 41,
     reviewCount: 15,
     image: "/images/cart/recommended-3.png",
+    gender: "woman",
     variants: [
       {
         id: 2031,
@@ -355,6 +366,7 @@ export const recommendedProducts: Product[] = [
     reviews: 19,
     reviewCount: 6,
     image: "/images/cart/recommended-4.png",
+    gender: "woman",
     variants: [
       {
         id: 2041,
@@ -375,6 +387,7 @@ export const recommendedProducts: Product[] = [
     reviews: 22,
     reviewCount: 7,
     image: "/images/cart/recommended-1.png",
+    gender: "woman",
     variants: [
       {
         id: 2051,

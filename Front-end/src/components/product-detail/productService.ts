@@ -83,3 +83,11 @@ export async function fetchShippingAndPaymentOptions(): Promise<{
     paymentMethods: PAYMENT_METHODS,
   };
 }
+import { mockRelatedProducts } from "../../mockProducts";
+// ...existing imports
+
+export async function fetchRelatedProducts(query?: string): Promise<Product[]> {
+  // Backend replacement: return (await fetch(`/api/products/related?q=${encodeURIComponent(query || "")}`)).json();
+  void query;
+  return mockRelatedProducts;
+}
