@@ -1,3 +1,28 @@
+export type SizingType =
+  | "alpha" // XS, S, M, L, XL
+  | "numeric" // 28, 30, 32, 34
+  | "shoe" // EU 39, 40, 41...
+  | "one-size" // One size
+  | "none"; // No size selection
+
+export interface SizeGuide {
+  title: string;
+  unit: string;
+  columns: string[];
+  rows: {
+    size: string;
+    measurements: number[];
+  }[];
+  note?: string;
+}
+
+export interface ProductSizing {
+  type: SizingType;
+  label?: string;
+  system?: string;
+  guide?: SizeGuide;
+}
+
 export type Product = {
   id: number;
   name: string;
@@ -15,6 +40,7 @@ export type Product = {
   model?: string;
   style?: string;
   variants: ProductVariant[];
+  sizing: ProductSizing;
 };
 
 export type ProductVariant = {
@@ -24,7 +50,7 @@ export type ProductVariant = {
     name: string;
     hex: string;
   };
-  size: string;
+  size: string | null;
   stock: number;
   image: string;
 };
@@ -94,6 +120,7 @@ export type CustomerInfo = {
   address: string;
   phone: string;
 };
+
 export type PaymentMethod = {
   id: string;
   name: string;
@@ -112,6 +139,7 @@ export type ShippingMethod = {
   available: boolean;
   supportedCountries?: CountryOption["code"][];
 };
+
 export type SortOption =
   | "popular"
   | "price-asc"
@@ -132,6 +160,7 @@ export type ProductFilterState = {
   minPrice: number;
   maxPrice: number;
 };
+
 export type ProductDetails = {
   productId: number;
   description: string;
@@ -142,6 +171,7 @@ export type ProductDetails = {
 };
 
 export type DetailTab = "details" | "reviews" | "shipping";
+
 export type Review = {
   id: number;
   title: string;

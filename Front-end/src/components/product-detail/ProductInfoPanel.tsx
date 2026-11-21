@@ -1,8 +1,6 @@
 import { useState } from "react";
 import type { Product, ProductVariant } from "../../types/product";
 
-const STANDARD_SIZES = ["XS", "S", "M", "L", "XL"];
-
 interface PurchaseActionsBoxProps {
   unitPrice: number;
   quantity: number;
@@ -113,40 +111,80 @@ export default function ProductInfoPanel({
 }: ProductInfoPanelProps) {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
 
-  const allSizes = Array.from(
-    new Set([...STANDARD_SIZES, ...product.variants.map((v) => v.size)]),
+  const uniqueColors = Array.from(
+    new Map(
+      product.variants.map((variant) => [variant.color.id, variant]),
+    ).values(),
   );
 
-  const uniqueColors = Array.from(
-    new Map(product.variants.map((v) => [v.color.id, v])).values(),
+  const availableSizes = Array.from(
+    new Set(
+      product.variants
+        .map((variant) => variant.size)
+        .filter((size): size is string => size !== null),
+    ),
   );
+
+  const alphaSizeOrder = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
+
+  const sortedSizes = [...availableSizes].sort((a, b) => {
+    if (product.sizing.type === "alpha") {
+      const aIndex = alphaSizeOrder.indexOf(a.toUpperCase());
+      const bIndex = alphaSizeOrder.indexOf(b.toUpperCase());
+
+      if (aIndex !== -1 && bIndex !== -1) {
+        return aIndex - bIndex;
+      }
+
+      return a.localeCompare(b);
+    }
+
+    const aNumber = Number(a);
+    const bNumber = Number(b);
+
+    if (Number.isFinite(aNumber) && Number.isFinite(bNumber)) {
+      return aNumber - bNumber;
+    }
+
+    return a.localeCompare(b);
+  });
+
+  const sizeOptions =
+    product.sizing.type === "one-size" ? ["One Size"] : sortedSizes;
+
+  const sizeGuide = product.sizing.guide;
+  const hasSizeSelector = product.sizing.type !== "none";
 
   function handleSizeClick(size: string) {
-    const matchSameColor = product.variants.find(
-      (v) =>
-        v.size === size &&
-        v.color.id === selectedVariant.color.id &&
-        v.stock > 0,
+    const chosen = product.variants.find(
+      (variant) =>
+        variant.size === size &&
+        variant.color.id === selectedVariant.color.id &&
+        variant.stock > 0,
     );
-    const matchAnyColor = product.variants.find(
-      (v) => v.size === size && v.stock > 0,
-    );
-    const chosen = matchSameColor || matchAnyColor;
-    if (chosen) onSelectVariant(chosen);
+
+    if (chosen) {
+      onSelectVariant(chosen);
+    }
   }
 
   function handleColorClick(colorId: number) {
     const matchSameSize = product.variants.find(
-      (v) =>
-        v.color.id === colorId &&
-        v.size === selectedVariant.size &&
-        v.stock > 0,
+      (variant) =>
+        variant.color.id === colorId &&
+        variant.size === selectedVariant.size &&
+        variant.stock > 0,
     );
+
     const matchAnySize = product.variants.find(
-      (v) => v.color.id === colorId && v.stock > 0,
+      (variant) => variant.color.id === colorId && variant.stock > 0,
     );
+
     const chosen = matchSameSize || matchAnySize;
-    if (chosen) onSelectVariant(chosen);
+
+    if (chosen) {
+      onSelectVariant(chosen);
+    }
   }
 
   const soldCount = product.reviews ?? 0;
@@ -159,10 +197,12 @@ export default function ProductInfoPanel({
           <h1 className="text-lg sm:text-xl font-bold uppercase text-gray-900">
             {product.name}
           </h1>
+
           <div className="flex items-center gap-2 mt-1">
             <span className="text-base sm:text-lg font-bold text-gray-900">
               ${product.price.toFixed(2)}
             </span>
+
             {product.originalPrice > product.price && (
               <span className="text-xs text-gray-400 line-through">
                 ${product.originalPrice.toFixed(2)}
@@ -191,57 +231,123 @@ export default function ProductInfoPanel({
       </div>
 
       {/* Size Selector */}
-      <div className="flex items-start gap-6">
-        <span className="text-xs text-gray-500 w-16 pt-1.5 shrink-0">Size</span>
-        <div className="flex-1">
-          <div className="flex flex-wrap gap-2">
-            {allSizes.map((size) => {
-              const isAvailable = product.variants.some(
-                (v) => v.size === size && v.stock > 0,
-              );
-              const isSelected = selectedVariant.size === size;
+      {hasSizeSelector && (
+        <div className="flex items-start gap-6">
+          <span className="text-xs text-gray-500 w-16 pt-1.5 shrink-0">
+            {product.sizing.label ?? "Size"}
+          </span>
 
-              return (
-                <button
-                  key={size}
-                  type="button"
-                  disabled={!isAvailable}
-                  onClick={() => handleSizeClick(size)}
-                  className={`min-w-[44px] h-[32px] px-2.5 rounded border text-xs font-medium transition ${
-                    !isAvailable
-                      ? "border-gray-200 text-gray-300 cursor-not-allowed"
-                      : isSelected
-                        ? "border-gray-900 bg-gray-50 text-gray-900 font-bold"
-                        : "border-gray-300 text-gray-700 hover:border-gray-900"
-                  }`}
-                >
-                  {size}
-                </button>
-              );
-            })}
-          </div>
-          <button
-            type="button"
-            onClick={() => setShowSizeGuide((prev) => !prev)}
-            className="text-[11px] font-medium text-[#FF8A00] hover:underline mt-2 inline-block"
-          >
-            Size guideline
-          </button>
-          {showSizeGuide && (
-            <div className="mt-2 p-2.5 rounded bg-gray-50 border border-gray-200 text-[11px] text-gray-600">
-              Regular fit — if between sizes, we recommend sizing up for a
-              relaxed drape.
+          <div className="flex-1">
+            <div className="flex flex-wrap gap-2">
+              {sizeOptions.map((size) => {
+                const isAvailable = product.variants.some(
+                  (variant) =>
+                    variant.size === size &&
+                    variant.color.id === selectedVariant.color.id &&
+                    variant.stock > 0,
+                );
+
+                const isSelected = selectedVariant.size === size;
+
+                return (
+                  <button
+                    key={size}
+                    type="button"
+                    disabled={!isAvailable}
+                    onClick={() => handleSizeClick(size)}
+                    className={`min-w-[44px] h-[32px] px-2.5 rounded border text-xs font-medium transition ${
+                      !isAvailable
+                        ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                        : isSelected
+                          ? "border-gray-900 bg-gray-50 text-gray-900 font-bold"
+                          : "border-gray-300 text-gray-700 hover:border-gray-900"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                );
+              })}
             </div>
-          )}
+
+            {sizeGuide && (
+              <>
+                <button
+                  type="button"
+                  aria-expanded={showSizeGuide}
+                  onClick={() => setShowSizeGuide((prev) => !prev)}
+                  className="text-[11px] font-medium text-[#FF8A00] hover:underline mt-2 inline-block"
+                >
+                  {showSizeGuide ? "Hide size guide" : "Size guideline"}
+                </button>
+
+                {showSizeGuide && (
+                  <div className="mt-2 p-3 rounded bg-gray-50 border border-gray-200 text-[11px] text-gray-600">
+                    <p className="font-semibold text-gray-800 mb-2">
+                      {sizeGuide.title}
+                    </p>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr>
+                            <th className="py-1.5 pr-3 font-semibold">Size</th>
+
+                            {sizeGuide.columns.map((column) => (
+                              <th
+                                key={column}
+                                className="py-1.5 px-2 font-semibold whitespace-nowrap"
+                              >
+                                {column}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {sizeGuide.rows.map((row) => (
+                            <tr
+                              key={row.size}
+                              className="border-t border-gray-200"
+                            >
+                              <td className="py-1.5 pr-3 font-semibold">
+                                {row.size}
+                              </td>
+
+                              {sizeGuide.columns.map((column, index) => (
+                                <td
+                                  key={`${row.size}-${column}`}
+                                  className="py-1.5 px-2 whitespace-nowrap"
+                                >
+                                  {row.measurements[index] ?? "—"}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <p className="mt-2 text-gray-500">
+                      Measurements: {sizeGuide.unit}
+                    </p>
+
+                    {sizeGuide.note && <p className="mt-2">{sizeGuide.note}</p>}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Color Selector */}
       <div className="flex items-center gap-6">
         <span className="text-xs text-gray-500 w-16 shrink-0">Color</span>
+
         <div className="flex items-center gap-2.5 flex-wrap">
           {uniqueColors.map((variant) => {
             const isSelected = selectedVariant.color.id === variant.color.id;
+
             return (
               <button
                 key={variant.color.id}
@@ -264,10 +370,12 @@ export default function ProductInfoPanel({
       {/* Shipping Info */}
       <div className="flex items-start gap-6">
         <span className="text-xs text-gray-500 w-16 shrink-0">Shipping</span>
+
         <div className="text-xs">
           <p className="font-semibold text-gray-800">
             Free Shipping to Victoria territory
           </p>
+
           <p className="text-[11px] text-gray-400 mt-0.5">
             Delivery Time: 14–17 days
           </p>
@@ -277,6 +385,7 @@ export default function ProductInfoPanel({
       {/* Quantity */}
       <div className="flex items-center gap-6">
         <span className="text-xs text-gray-500 w-16 shrink-0">Quantity</span>
+
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center justify-between w-[96px] h-[36px] rounded border border-gray-300 px-2">
             <button
@@ -287,9 +396,11 @@ export default function ProductInfoPanel({
             >
               −
             </button>
+
             <span className="text-xs font-semibold text-gray-800">
               {quantity}
             </span>
+
             <button
               type="button"
               disabled={quantity >= selectedVariant.stock}
@@ -299,6 +410,7 @@ export default function ProductInfoPanel({
               +
             </button>
           </div>
+
           <span className="text-[11px] text-gray-500">
             {selectedVariant.stock} available / {soldCount} sold
           </span>

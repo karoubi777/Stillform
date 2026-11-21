@@ -5,7 +5,7 @@ import Header from "./header/Header";
 import Footer from "./Footer";
 import MobileMenu from "./header/MobileMenu";
 import BlogFooter from "./blog/BlogFooter";
-
+import ScrollToTop from "./shared/ScrollToTop";
 import { mockcartitems, mockTopProducts } from "../mockProducts";
 type LayoutProps = {
   footerVariant?: "default" | "blog";
@@ -20,6 +20,8 @@ export default function SiteLayout({
     footerVariant ?? (pathname.startsWith("/blog") ? "blog" : "default");
   return (
     <div className="min-h-screen flex flex-col">
+      <ScrollToTop />
+
       <Header
         products={mockTopProducts}
         cartItems={mockcartitems}
@@ -32,7 +34,6 @@ export default function SiteLayout({
 
       {activeFooter === "blog" ? <BlogFooter /> : <Footer />}
 
-      {/* Check this line! Both props MUST be here: */}
       <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
     </div>
   );

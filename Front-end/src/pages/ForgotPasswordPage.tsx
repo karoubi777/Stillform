@@ -27,6 +27,27 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="w-full bg-white flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-[1440px] mx-auto flex justify-end">
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-xs sm:text-sm font-medium text-gray-600 hover:text-black transition-colors"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+            />
+          </svg>
+          Back to the website
+        </Link>
+      </div>
       {/* Centered Container: Max width 606px */}
       <div className="w-full max-w-[606px] mx-auto text-center">
         {/* Title */}

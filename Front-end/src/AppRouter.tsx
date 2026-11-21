@@ -8,18 +8,22 @@ import CartPage from "./pages/CartPage";
 import Catalogpage from "./pages/catalogPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import BlogPage from "./pages/BlogPage";
+import AuthLayout from "./components/AuthLayout";
 export default function AppRouter() {
   return (
     <Routes>
       <Route element={<SiteLayout />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="/auth" element={<AuthPage />} />
-        <Route path="/forgotpass" element={<ForgotPasswordPage />} />
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/catalog" element={<Catalogpage />} />
-        <Route path="/product/:id" element={<ProductDetailPage />} />{" "}
+        <Route path="/product/:id" element={<ProductDetailPage />} />
         <Route path="/blog" element={<BlogPage />} />
+      </Route>
+``
+      <Route element={<AuthLayout />}>
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/forgotpass" element={<ForgotPasswordPage />} />
       </Route>
     </Routes>
   );

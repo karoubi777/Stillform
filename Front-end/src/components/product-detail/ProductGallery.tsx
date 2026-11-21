@@ -34,8 +34,11 @@ export default function ProductGallery({
           <button
             key={`${img}-${idx}`}
             type="button"
+            onMouseEnter={() => setSelectedIndex(idx)}
             onClick={() => setSelectedIndex(idx)}
-            className={`w-full aspect-[3/4] rounded overflow-hidden border transition ${
+            aria-label={`View image ${idx + 1}`}
+            aria-pressed={selectedIndex === idx}
+            className={`w-full aspect-[3/4] rounded overflow-hidden border transition-all duration-200 ${
               selectedIndex === idx
                 ? "border-gray-900 ring-1 ring-gray-900"
                 : "border-gray-200 opacity-75 hover:opacity-100"

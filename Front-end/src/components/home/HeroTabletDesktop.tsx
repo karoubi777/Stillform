@@ -33,16 +33,22 @@ export default function HeroTabletDesktop() {
          ======================================================== */}
       <div
         className="
-          hidden lg:flex flex-col justify-between
-          absolute left-[547px] top-1/2 -translate-x-1/2 -translate-y-1/2 z-30
-          w-[228px] h-[129px] bg-white shadow-2xl rounded-xs pointer-events-none
+            hidden lg:flex flex-col justify-between
+    absolute left-[547px] top-1/2
+    -translate-x-1/2 -translate-y-1/2 z-30
+    w-[228px] h-[129px]
+    bg-white shadow-2xl rounded-xs
+    cursor-pointer
+    transition-all duration-300 ease-out
+    hover:scale-105 hover:shadow-xl
         "
       >
-        {/* Top White Section */}
+        {/* Discount  sticker*/}
         <div className="flex flex-col items-center justify-center p-3 text-center my-auto">
           <h4 className="text-sm font-bold text-gray-900 tracking-tight leading-snug">
             Summer Essentials
           </h4>
+
           <p className="text-lg font-extrabold text-[#FF3B16] mt-0.5">
             20% off
           </p>

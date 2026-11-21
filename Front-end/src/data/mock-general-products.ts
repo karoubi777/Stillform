@@ -1,4 +1,27 @@
-import type { Product, ProductDetails, ProductReview } from "../types/product";
+import type {
+  Product,
+  ProductDetails,
+  ProductReview,
+  ProductSizing,
+} from "../types/product";
+
+const clothingSizing: ProductSizing = {
+  type: "alpha",
+  label: "Size",
+  guide: {
+    title: "Clothing size guide",
+    unit: "cm",
+    columns: ["Chest", "Waist", "Hip", "Length"],
+    rows: [
+      { size: "XS", measurements: [82, 64, 90, 60] },
+      { size: "S", measurements: [86, 68, 94, 61] },
+      { size: "M", measurements: [90, 72, 98, 62] },
+      { size: "L", measurements: [96, 78, 104, 63] },
+      { size: "XL", measurements: [102, 84, 110, 64] },
+    ],
+    note: "Illustrative measurements for mock data only. Check the brand's official size chart before using these values for real products.",
+  },
+};
 
 export const mockCatalogProducts: Product[] = [
   {
@@ -15,6 +38,7 @@ export const mockCatalogProducts: Product[] = [
     reviews: 289,
     reviewCount: 289,
     gender: "Women",
+    sizing: clothingSizing,
     variants: [
       {
         id: 3011,
@@ -46,6 +70,7 @@ export const mockCatalogProducts: Product[] = [
     reviews: 86,
     reviewCount: 86,
     gender: "men",
+    sizing: clothingSizing,
     variants: [
       {
         id: 3021,
@@ -77,6 +102,7 @@ export const mockCatalogProducts: Product[] = [
     reviews: 526,
     reviewCount: 526,
     gender: "Women",
+    sizing: clothingSizing,
     variants: [
       {
         id: 3031,
@@ -101,6 +127,7 @@ export const mockCatalogProducts: Product[] = [
     reviews: 56,
     reviewCount: 56,
     gender: "Women",
+    sizing: clothingSizing,
     variants: [
       {
         id: 3041,
@@ -125,6 +152,7 @@ export const mockCatalogProducts: Product[] = [
     reviews: 150,
     reviewCount: 150,
     gender: "Woman",
+    sizing: clothingSizing,
     variants: [
       {
         id: 3051,
@@ -149,6 +177,7 @@ export const mockCatalogProducts: Product[] = [
     reviews: 200,
     reviewCount: 200,
     gender: "Women",
+    sizing: clothingSizing,
     variants: [
       {
         id: 3061,
@@ -173,6 +202,7 @@ export const mockCatalogProducts: Product[] = [
     reviews: 300,
     reviewCount: 300,
     gender: "Women",
+    sizing: clothingSizing,
     variants: [
       {
         id: 3071,
@@ -197,6 +227,7 @@ export const mockCatalogProducts: Product[] = [
     reviews: 120,
     reviewCount: 120,
     gender: "Women",
+    sizing: clothingSizing,
     variants: [
       {
         id: 3081,
@@ -221,6 +252,7 @@ export const mockCatalogProducts: Product[] = [
     reviews: 289,
     reviewCount: 289,
     gender: "Women",
+    sizing: clothingSizing,
     variants: [
       {
         id: 3091,
@@ -232,6 +264,7 @@ export const mockCatalogProducts: Product[] = [
     ],
   },
 ];
+
 // the example product + review
 export const mockProductDetails: Record<number, ProductDetails> = {
   301: {

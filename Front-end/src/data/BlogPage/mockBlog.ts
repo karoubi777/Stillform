@@ -1,4 +1,4 @@
-import type { BlogPost, Review, BlogTheme } from "../../types/product";
+import type { BlogPost, Review } from "../../types/product";
 
 export const MOCK_HERO_BLOGS: BlogPost[] = [
   {
