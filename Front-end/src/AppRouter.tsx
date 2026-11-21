@@ -9,6 +9,7 @@ import Catalogpage from "./pages/catalogPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import BlogPage from "./pages/BlogPage";
 import AuthLayout from "./components/AuthLayout";
+import AboutUsPage from "./pages/AboutUsPage";
 export default function AppRouter() {
   return (
     <Routes>
@@ -19,8 +20,9 @@ export default function AppRouter() {
         <Route path="/catalog" element={<Catalogpage />} />
         <Route path="/product/:id" element={<ProductDetailPage />} />
         <Route path="/blog" element={<BlogPage />} />
+        <Route path="about" element={<AboutUsPage></AboutUsPage>} />
       </Route>
-``
+      ``
       <Route element={<AuthLayout />}>
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/forgotpass" element={<ForgotPasswordPage />} />

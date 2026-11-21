@@ -1,11 +1,57 @@
 import type {
   FlashSaleProduct,
   Product,
+  ProductSizing,
   TrendingProduct,
   PromoBannerData,
   MagSafeSlide,
   CartItem,
 } from "./types/product";
+
+// Shared sizing configurations
+
+const clothingSizing: ProductSizing = {
+  type: "alpha",
+  label: "Size",
+  guide: {
+    title: "Clothing size guide",
+    unit: "cm",
+    columns: ["Chest", "Waist", "Hip", "Length"],
+    rows: [
+      { size: "XS", measurements: [82, 64, 90, 60] },
+      { size: "S", measurements: [86, 68, 94, 61] },
+      { size: "M", measurements: [90, 72, 98, 62] },
+      { size: "L", measurements: [96, 78, 104, 63] },
+      { size: "XL", measurements: [102, 84, 110, 64] },
+    ],
+    note: "Measurements are illustrative mock data. Check the actual brand size guide before using these values.",
+  },
+};
+
+const bagSizing: ProductSizing = {
+  type: "one-size",
+  label: "Size",
+};
+
+const shoeSizing: ProductSizing = {
+  type: "shoe",
+  label: "EU Size",
+  system: "EU",
+  guide: {
+    title: "Shoe size guide",
+    unit: "cm",
+    columns: ["Foot length"],
+    rows: [
+      { size: "38", measurements: [24] },
+      { size: "39", measurements: [24.5] },
+      { size: "40", measurements: [25] },
+      { size: "41", measurements: [25.5] },
+      { size: "42", measurements: [26.5] },
+      { size: "43", measurements: [27] },
+    ],
+    note: "Measurements are illustrative mock data.",
+  },
+};
 
 export const promoBannersMock: Record<
   "sectionOne" | "sectionTwo",
@@ -37,6 +83,7 @@ export const mockTopProducts: Product[] = [
     reviews: 289,
     reviewCount: 4,
     gender: "Women",
+    sizing: clothingSizing,
     variants: [
       {
         id: 1011,
@@ -65,6 +112,7 @@ export const mockTopProducts: Product[] = [
     reviews: 523,
     reviewCount: 3,
     gender: "womman",
+    sizing: clothingSizing,
     variants: [
       {
         id: 1021,
@@ -86,6 +134,7 @@ export const mockTopProducts: Product[] = [
     reviews: 106,
     reviewCount: 0,
     gender: "womman",
+    sizing: clothingSizing,
     variants: [
       {
         id: 1031,
@@ -107,6 +156,7 @@ export const mockTopProducts: Product[] = [
     reviews: 121,
     reviewCount: 0,
     gender: "womman",
+    sizing: clothingSizing,
     variants: [
       {
         id: 1041,
@@ -166,6 +216,7 @@ export const mockFlashSales: FlashSaleProduct[] = [
     endTime: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
     reviewCount: 0,
     gender: "woman",
+    sizing: bagSizing,
     variants: [
       {
         id: 11,
@@ -188,6 +239,7 @@ export const mockFlashSales: FlashSaleProduct[] = [
     endTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
     reviewCount: 0,
     gender: "woman",
+    sizing: shoeSizing,
     variants: [
       {
         id: 21,
@@ -212,6 +264,7 @@ export const mockFlashSales: FlashSaleProduct[] = [
     ).toISOString(),
     reviewCount: 0,
     gender: "woman",
+    sizing: bagSizing,
     variants: [
       {
         id: 31,
@@ -234,6 +287,7 @@ export const mockFlashSales: FlashSaleProduct[] = [
     endTime: new Date(Date.now() + 25 * 60 * 60 * 1000).toISOString(),
     reviewCount: 0,
     gender: "woman",
+    sizing: shoeSizing,
     variants: [
       {
         id: 41,
@@ -304,6 +358,7 @@ export const recommendedProducts: Product[] = [
     reviewCount: 12,
     image: "/images/cart/recommended-1.png",
     gender: "woman",
+    sizing: clothingSizing,
     variants: [
       {
         id: 2011,
@@ -325,6 +380,7 @@ export const recommendedProducts: Product[] = [
     reviewCount: 9,
     image: "/images/cart/recommended-2.png",
     gender: "woman",
+    sizing: clothingSizing,
     variants: [
       {
         id: 2021,
@@ -346,6 +402,7 @@ export const recommendedProducts: Product[] = [
     reviewCount: 15,
     image: "/images/cart/recommended-3.png",
     gender: "woman",
+    sizing: clothingSizing,
     variants: [
       {
         id: 2031,
@@ -367,6 +424,7 @@ export const recommendedProducts: Product[] = [
     reviewCount: 6,
     image: "/images/cart/recommended-4.png",
     gender: "woman",
+    sizing: clothingSizing,
     variants: [
       {
         id: 2041,
@@ -388,6 +446,7 @@ export const recommendedProducts: Product[] = [
     reviewCount: 7,
     image: "/images/cart/recommended-1.png",
     gender: "woman",
+    sizing: clothingSizing,
     variants: [
       {
         id: 2051,

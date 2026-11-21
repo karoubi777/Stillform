@@ -164,7 +164,7 @@ export default function Catalogpage() {
 
       if (filters.sizes.length > 0) {
         const hasSize = product.variants.some((v) =>
-          filters.sizes.includes(v.size),
+          filters.sizes.includes(v.size ?? "One Size"),
         );
         if (!hasSize) return false;
       }
