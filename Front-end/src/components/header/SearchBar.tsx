@@ -74,8 +74,8 @@ export default function SearchBar({
     setIsOpen(false);
     setQuery("");
     // Falls back to product.id if slug is not defined
-    const targetPath = product.slug || product.id;
-    navigate(`/products/${targetPath}`);
+    const targetPath = product.id;
+    navigate(`/catalog/${targetPath}`);
   }
 
   function handleSubmit(event?: React.SubmitEvent<HTMLFormElement>) {

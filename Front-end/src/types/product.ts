@@ -141,18 +141,45 @@ export type ProductDetails = {
   careInstructions: string[];
 };
 
-export type ProductReview = {
+export type DetailTab = "details" | "reviews" | "shipping";
+export type Review = {
   id: number;
   title: string;
   author: string;
+  authorAvatar?: string;
+  authorRole?: string;
   rating: number;
   date: string;
-  advantages: string;
-  disadvantages: string;
   comment: string;
+  advantages?: string;
+  disadvantages?: string;
   images?: string[];
   likes: number;
   dislikes: number;
   userVote?: "like" | "dislike" | null;
+  productId?: number;
+  blogPostId?: number;
 };
-export type DetailTab = "details" | "reviews" | "shipping";
+
+export type ProductReview = Review;
+
+export type BlogTheme = {
+  bgColor: string;
+  accentColor?: string;
+};
+
+export type BlogPost = {
+  id: number;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  image: string;
+  publishedAt: string;
+  likes: number;
+  isLiked?: boolean;
+  commentsCount: number;
+  tabTitle?: string;
+  tabSummary?: string;
+  theme?: BlogTheme;
+};

@@ -5,8 +5,9 @@ import HomePage from "./pages/HomePage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import CartPage from "./pages/CartPage";
-import Catalogpage from "./pages/catalog";
+import Catalogpage from "./pages/catalogPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
+import BlogPage from "./pages/BlogPage";
 export default function AppRouter() {
   return (
     <Routes>
@@ -17,7 +18,8 @@ export default function AppRouter() {
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/catalog" element={<Catalogpage />} />
-        <Route path="/product/:id" element={<ProductDetailPage />} />
+        <Route path="/product/:id" element={<ProductDetailPage />} />{" "}
+        <Route path="/blog" element={<BlogPage />} />
       </Route>
     </Routes>
   );

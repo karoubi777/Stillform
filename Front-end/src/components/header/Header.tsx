@@ -158,7 +158,7 @@ export default function Header({
 
         {/* ================= TABLET & DESKTOP HEADER (>= 640px) ================= */}
         <div className="hidden min-[640px]:block w-full border-b border-gray-100">
-          <div className="flex items-center justify-between gap-4 px-[5%] lg:px-[8.5%] py-3 min-h-[56px] max-w-[1440px] mx-auto">
+          <div className="flex items-center justify-between gap-4 px-[5%] lg:px-[4%] py-3 min-h-[56px] max-w-[1680px] mx-auto">
             <div className="flex items-center gap-2 shrink-0 cursor-pointer">
               <svg
                 className="w-8 h-8 text-[#4F46E5]"
@@ -186,18 +186,18 @@ export default function Header({
             </div>
 
             <nav className="hidden min-[1024px]:flex items-center gap-6 text-xs text-gray-500 font-medium whitespace-nowrap">
-              <a href="#" className="hover:text-black transition">
+              <Link to="/about" className="hover:text-black transition">
                 About us
-              </a>
-              <a href="#" className="hover:text-black transition">
+              </Link>
+              <Link to="/blog" className="hover:text-black transition">
                 Blog
-              </a>
-              <a href="#" className="hover:text-black transition">
-                Contact us
-              </a>
-              <a href="#" className="hover:text-black transition">
+              </Link>
+              <Link to="/contact" className="hover:text-black transition">
+                Contact Us
+              </Link>
+              <Link to="/contact" className="hover:text-black transition">
                 Help &amp; support
-              </a>
+              </Link>
             </nav>
 
             <div className="flex items-center gap-3 text-gray-400 shrink-0">
@@ -254,7 +254,7 @@ export default function Header({
 
           {/* Dark Nav Row */}
           <div className="w-full bg-[#242424] text-white">
-            <div className="flex items-center justify-between px-[5%] lg:px-[8.5%] h-[48px] lg:h-[80px] max-w-[1440px] mx-auto text-xs">
+            <div className="flex items-center justify-between px-[5%] lg:px-[4%] h-[48px] lg:h-[80px] max-w-[1680px] mx-auto text-xs">
               <div className="flex items-center gap-6 shrink-0">
                 <button
                   type="button"
@@ -334,7 +334,7 @@ export default function Header({
           {/* Categories Nav & MegaMenu */}
           <div
             onMouseLeave={handleMouseLeave}
-            className="relative max-w-[1440px] mx-auto px-[5%] lg:px-[8.5%]"
+            className="relative max-w-[1680px] mx-auto px-[5%] lg:px-[4%]"
           >
             <nav className="flex items-center justify-between gap-4 h-[42px] overflow-x-auto whitespace-nowrap text-xs text-gray-600 scrollbar-hide">
               {CATEGORIES.map((cat) => (

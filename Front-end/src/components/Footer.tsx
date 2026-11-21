@@ -18,7 +18,7 @@ export default function Footer() {
         <NewsletterBanner onSubscribe={handleNewsletterSubscribe} />
       </div>
 
-      <div className="w-full max-w-[1440px] mx-auto px-6 lg:px-[8.5%]">
+      <div className="w-full max-w-[1680px] mx-auto px-6 lg:px-[4%]">
         {/* 2. NAVIGATION COLUMNS
             - Mobile: py-12, max-w-[362px], grid-cols-2
             - Tablet: pt-28 pb-16, grid-cols-2
@@ -102,7 +102,7 @@ export default function Footer() {
 
       {/* 3. BOTTOM PAYMENT & LOCALIZATION BAR */}
       <div className="bg-white border-t border-gray-100 py-4">
-        <div className="w-full max-w-[1440px] mx-auto px-6 lg:px-[8.5%] flex flex-col gap-4">
+        <div className="w-full max-w-[1680px] mx-auto px-6 lg:px-[4%] flex flex-col gap-4">
           {/* Top of Bottom Bar: Payment Logos & Language Dropdown */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
