@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useParams, useLocation, useNavigate, Link } from "react-router-dom";
-
+import { useCart } from "../context/CartContext";
+import type { CartItemOption } from "../types/product";
 import {
   fetchProductById,
   fetchProductDetails,
@@ -31,12 +32,22 @@ interface ProductDetailPageProps {
   ) => void;
 }
 
-export default function ProductDetailPage({
-  onAddToCart,
-}: ProductDetailPageProps) {
+export default function ProductDetailPage({}: ProductDetailPageProps) {
+  const { addToCart } = useCart();
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
+  function buildSelectedOptions(): CartItemOption[] {
+    if (!addInsurance) return [];
+    return [
+      {
+        id: "item-shipping-insurance",
+        type: "insurance",
+        label: "Shipping Insurance",
+        price: 9,
+      },
+    ];
+  }
 
   const passedProduct = (location.state as { product?: Product } | null)
     ?.product;
@@ -246,20 +257,12 @@ export default function ProductDetailPage({
 
   function handleAddToBasket() {
     if (!product || !selectedVariant) return;
-    if (onAddToCart) {
-      onAddToCart(product, selectedVariant, quantity);
-    } else {
-      alert(
-        `Added ${quantity} × ${product.name} (${selectedVariant.size}, ${selectedVariant.color.name}) to basket!`,
-      );
-    }
+    addToCart(product, selectedVariant, quantity, buildSelectedOptions());
   }
 
   function handleShopNow() {
     if (!product || !selectedVariant) return;
-    if (onAddToCart) {
-      onAddToCart(product, selectedVariant, quantity);
-    }
+    addToCart(product, selectedVariant, quantity, buildSelectedOptions());
     navigate("/cart");
   }
 

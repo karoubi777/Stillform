@@ -1,3 +1,44 @@
+// Cart related
+export type CartItemOption = {
+  id: string;
+  type: "insurance" | "gift-wrap" | "personalization";
+  label: string;
+  price: number;
+};
+
+export type CartItem = {
+  id: number;
+  product: Product;
+  variant: ProductVariant;
+  quantity: number;
+  options: CartItemOption[];
+};
+
+export type AppliedCoupon = {
+  code: string;
+  discountAmount: number;
+};
+
+export type CartTotals = {
+  subtotal: number;
+  optionsTotal: number;
+  discount: number;
+  shipping: number;
+  tax: number;
+  total: number;
+};
+
+export type CartState = {
+  items: CartItem[];
+  orderOptions: CartItemOption[]; // Services like gift-wrap / order insurance without a specific product
+  coupon: AppliedCoupon | null;
+  shippingCost: number;
+  totals: CartTotals;
+  loading: boolean;
+  error: string | null;
+};
+
+//-------------------------------------------
 export type SizingType =
   | "alpha" // XS, S, M, L, XL
   | "numeric" // 28, 30, 32, 34
@@ -53,13 +94,6 @@ export type ProductVariant = {
   size: string | null;
   stock: number;
   image: string;
-};
-
-export type CartItem = {
-  id: number;
-  product: Product;
-  variant: ProductVariant;
-  quantity: number;
 };
 
 export type FlashSaleProduct = Product & {

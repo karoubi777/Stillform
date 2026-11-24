@@ -19,7 +19,7 @@ export default function AboutHero() {
         <div className="flex-1 max-w-[720px]">
           {/* Subtitle tag */}
           <p className="text-xs sm:text-sm font-medium text-gray-500 mb-2">
-            Let&apos;s get to know Luminae
+            Let&apos;s get to know Stillform
           </p>
 
           {/* Main Title */}
@@ -69,10 +69,7 @@ export default function AboutHero() {
         </div>
 
         {/* ================= RIGHT COLUMN: QUOTE BUBBLE ================= */}
-        {/* 
-            - Hidden completely on mobile: hidden
-            - Visible and pinned to the right on tablet & desktop: md:flex 
-        */}
+
         <div className="hidden md:flex relative shrink-0 bg-[#EAF2FC] rounded-2xl p-6 sm:p-8 max-w-[280px] lg:max-w-[320px] w-full text-center mt-12 lg:mt-16 shadow-xs">
           {/* Circular Quote Mark Badge */}
           <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-[#D4E5FA] flex items-center justify-center text-[#3B72D9] text-3xl font-serif ">

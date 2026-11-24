@@ -1,8 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
-import { mockcartitems, recommendedProducts } from "../mockProducts";
+import { useCart } from "../context/CartContext";
+import { recommendedProducts } from "../mockProducts";
 import { PAYMENT_METHODS, SHIPPING_METHODS } from "../data/checkoutMethods";
 
 import CheckoutStepper from "../components/cart/CheckoutStepper";
@@ -17,12 +18,10 @@ import ConfirmationStep from "../components/cart/ConfirmationStep";
 import OrderSummary from "../components/cart/OrderSummary";
 import RecommendedProducts from "../components/shared/RecommendedProducts";
 import type {
-  CartItem,
+  CartItemOption,
+  CartTotals,
   CheckoutStep,
   CustomerInfo,
-  OrderTotals,
-  Product,
-  ProductVariant,
 } from "../types/product";
 
 const STEP_ORDER: CheckoutStep[] = [
@@ -32,16 +31,36 @@ const STEP_ORDER: CheckoutStep[] = [
   "confirmation",
 ];
 
+const GIFT_BOX_OPTION: CartItemOption = {
+  id: "order-gift-box",
+  type: "gift-wrap",
+  label: "Pack in a Gift Box",
+  price: 10.9,
+};
+
 export default function CartPage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
-  const [currentStep, setCurrentStep] = useState<CheckoutStep>("cart");
+  const {
+    items,
+    orderOptions,
+    coupon,
+    totals,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    toggleItemOption,
+    toggleOrderOption,
+    hasOrderOption,
+    applyCoupon,
+    setShippingCost,
+    clearCart,
+  } = useCart();
 
-  const [items, setItems] = useState<CartItem[]>(mockcartitems);
-  const [packInGiftBox, setPackInGiftBox] = useState(false);
-  const [couponCode, setCouponCode] = useState("");
-  const [discountAmount, setDiscountAmount] = useState(0);
+  const [currentStep, setCurrentStep] = useState<CheckoutStep>("cart");
+  const [couponCode, setCouponCode] = useState(coupon?.code ?? "");
+  const packInGiftBox = hasOrderOption(GIFT_BOX_OPTION.id);
 
   // Customer Info State
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
@@ -91,6 +110,11 @@ export default function CartPage() {
     [selectedShippingId, customerInfo.country],
   );
 
+  // Keep CartContext shipping cost synced with selected shipping method
+  useEffect(() => {
+    setShippingCost(selectedShippingMethod?.cost ?? 0);
+  }, [selectedShippingMethod, setShippingCost]);
+
   const isShippingPaymentValid = Boolean(
     selectedPaymentMethod && selectedShippingMethod,
   );
@@ -110,64 +134,16 @@ export default function CartPage() {
     }
   }
 
-  function handleQuantityChange(id: number, delta: number) {
-    setItems((prev) =>
-      prev.map((item) => {
-        if (item.id !== id) return item;
-        const nextQty = Math.min(
-          item.variant.stock,
-          Math.max(1, item.quantity + delta),
-        );
-        return { ...item, quantity: nextQty };
-      }),
-    );
-  }
-
-  function handleRemoveItem(id: number) {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  }
-
-  function handleAddRecommendedToCart(
-    product: Product,
-    variant: ProductVariant,
-  ) {
-    setItems((prev) => {
-      const existing = prev.find(
-        (item) =>
-          item.product.id === product.id && item.variant.id === variant.id,
-      );
-
-      if (existing) {
-        return prev.map((item) =>
-          item.id === existing.id
-            ? {
-                ...item,
-                quantity: Math.min(variant.stock, item.quantity + 1),
-              }
-            : item,
-        );
-      }
-
-      return [
-        ...prev,
-        {
-          id: Date.now(),
-          product,
-          variant,
-          quantity: 1,
-        },
-      ];
-    });
-  }
-
   function handleCouponSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!isAuthenticated) {
       navigate("/auth");
       return;
     }
-    setDiscountAmount(couponCode.trim() ? 10 : 0);
+    applyCoupon(couponCode);
   }
+
+  const hasCartContent = items.length > 0 || orderOptions.length > 0;
 
   function handleStepChange(targetStep: CheckoutStep) {
     const targetIndex = STEP_ORDER.indexOf(targetStep);
@@ -178,7 +154,7 @@ export default function CartPage() {
       return;
     }
 
-    if (items.length === 0) return;
+    if (!hasCartContent) return;
 
     if (targetIndex > 1 && !isCustomerInfoValid) {
       setCurrentStep("customer-info");
@@ -196,7 +172,7 @@ export default function CartPage() {
   }
 
   function handleAdvanceStep() {
-    if (items.length === 0) return;
+    if (!hasCartContent) return;
 
     if (currentStep === "customer-info" && !isCustomerInfoValid) {
       setShowCustomerErrors(true);
@@ -231,40 +207,26 @@ export default function CartPage() {
       setIsSubmittingOrder(false);
       setIsConfirmModalOpen(false);
       setPlacedOrderId(mockOrderNumber);
-      setItems([]);
+      clearCart();
     }, 600);
   }
 
   const canProceed =
-    items.length > 0 &&
+    hasCartContent &&
     (currentStep !== "customer-info" || isCustomerInfoValid) &&
     (currentStep !== "shipping-payment" || isShippingPaymentValid) &&
     (currentStep !== "confirmation" || isOrderConfirmed);
 
-  const totals: OrderTotals = useMemo(() => {
-    const subtotal = items.reduce(
-      (acc, item) => acc + item.product.price * item.quantity,
-      0,
-    );
-    const shipping = selectedShippingMethod?.cost ?? 0;
-    const tax = 0;
-    const giftBoxPrice = packInGiftBox ? 10.9 : 0;
-    const discount = isAuthenticated ? discountAmount : 0;
-    const total = Math.max(
-      0,
-      subtotal + shipping + tax + giftBoxPrice - discount,
-    );
+  // Only apply coupon discount when authenticated
+  const effectiveTotals: CartTotals = useMemo(() => {
+    if (isAuthenticated) return totals;
+    return {
+      ...totals,
+      discount: 0,
+      total: Math.max(0, totals.total + totals.discount),
+    };
+  }, [totals, isAuthenticated]);
 
-    return { subtotal, shipping, tax, discount, giftBoxPrice, total };
-  }, [
-    items,
-    selectedShippingMethod,
-    packInGiftBox,
-    discountAmount,
-    isAuthenticated,
-  ]);
-
-  // Order Placed Success Screen
   if (placedOrderId) {
     return (
       <div className="w-full bg-white py-14 px-4 sm:px-6 max-w-[640px] mx-auto text-center">
@@ -318,8 +280,9 @@ export default function CartPage() {
           {currentStep === "cart" && (
             <CartItemsList
               items={items}
-              onQuantityChange={handleQuantityChange}
-              onRemoveItem={handleRemoveItem}
+              onQuantityChange={updateQuantity}
+              onRemoveItem={removeFromCart}
+              onToggleItemOption={toggleItemOption}
             />
           )}
 
@@ -358,10 +321,12 @@ export default function CartPage() {
         </div>
 
         <OrderSummary
-          totals={totals}
+          totals={effectiveTotals}
           isAuthenticated={isAuthenticated}
           packInGiftBox={packInGiftBox}
-          onToggleGiftBox={setPackInGiftBox}
+          onToggleGiftBox={(checked) =>
+            toggleOrderOption(GIFT_BOX_OPTION, checked)
+          }
           couponCode={couponCode}
           onCouponChange={setCouponCode}
           onCouponSubmit={handleCouponSubmit}
@@ -375,7 +340,7 @@ export default function CartPage() {
       {(currentStep === "cart" || currentStep === "customer-info") && (
         <RecommendedProducts
           products={recommendedProducts}
-          onAddToCart={handleAddRecommendedToCart}
+          onAddToCart={(product, variant) => addToCart(product, variant, 1)}
         />
       )}
 
@@ -395,7 +360,7 @@ export default function CartPage() {
             <p className="text-xs text-gray-600 leading-relaxed mb-4">
               You are about to place an order of{" "}
               <span className="font-bold text-gray-900">
-                ${totals.total.toFixed(2)}
+                ${effectiveTotals.total.toFixed(2)}
               </span>{" "}
               via{" "}
               <span className="font-semibold text-gray-900">
@@ -421,7 +386,7 @@ export default function CartPage() {
                 {isSubmittingOrder ? "Processing..." : "Place Order"}
               </button>
             </div>
-          </div >
+          </div>
         </div>
       )}
     </div>

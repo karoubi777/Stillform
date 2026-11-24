@@ -1,15 +1,18 @@
-import type { CartItem } from "../../types/product";
 import { Link } from "react-router-dom";
+import type { CartItem, CartItemOption } from "../../types/product";
+
 interface CartItemsListProps {
   items: CartItem[];
   onQuantityChange: (id: number, delta: number) => void;
   onRemoveItem: (id: number) => void;
+  onToggleItemOption?: (cartItemId: number, option: CartItemOption) => void;
 }
 
 export default function CartItemsList({
   items,
   onQuantityChange,
   onRemoveItem,
+  onToggleItemOption,
 }: CartItemsListProps) {
   return (
     <div className="w-full">
@@ -33,6 +36,10 @@ export default function CartItemsList({
               item.product.images?.[0] ||
               "";
             const atMaxStock = item.quantity >= item.variant.stock;
+            const itemOptionsCost = item.options.reduce(
+              (sum, opt) => sum + opt.price,
+              0,
+            );
 
             return (
               <div
@@ -75,6 +82,31 @@ export default function CartItemsList({
                         </>
                       )}
                     </div>
+
+                    {item.options.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-1.5">
+                        {item.options.map((opt) => (
+                          <span
+                            key={opt.id}
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-50 text-[#3B72D9] text-[10px] font-medium"
+                          >
+                            <span>
+                              {opt.label} (+${opt.price.toFixed(2)})
+                            </span>
+                            {onToggleItemOption && (
+                              <button
+                                type="button"
+                                onClick={() => onToggleItemOption(item.id, opt)}
+                                aria-label={`Remove ${opt.label}`}
+                                className="hover:text-red-500 ml-0.5 font-bold"
+                              >
+                                ×
+                              </button>
+                            )}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -108,9 +140,13 @@ export default function CartItemsList({
                   </div>
                 </div>
 
-                {/* Line Total */}
+                {/* Line Total (including item options) */}
                 <div className="w-[40%] lg:w-[14%] text-center text-xs sm:text-sm font-medium text-gray-800 whitespace-nowrap">
-                  ${(item.product.price * item.quantity).toFixed(2)}
+                  $
+                  {(
+                    item.product.price * item.quantity +
+                    itemOptionsCost
+                  ).toFixed(2)}
                 </div>
 
                 {/* Delete Icon */}

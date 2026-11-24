@@ -1,7 +1,7 @@
-import type { CheckoutStep, OrderTotals } from "../../types/product";
+import type { CartTotals, CheckoutStep } from "../../types/product";
 
 interface OrderSummaryProps {
-  totals: OrderTotals;
+  totals: CartTotals;
   isAuthenticated: boolean;
   packInGiftBox: boolean;
   onToggleGiftBox: (checked: boolean) => void;
@@ -34,6 +34,9 @@ export default function OrderSummary({
     confirmation: "CONFIRM & PAY",
   };
 
+  const giftBoxPrice = packInGiftBox ? 10.9 : 0;
+  const itemAndExtraOptions = Math.max(0, totals.optionsTotal - giftBoxPrice);
+
   return (
     <div className="w-full sm:w-[255px] md:w-[295px] lg:w-[309px] shrink-0 flex flex-col gap-4">
       <div className="w-[calc(100%+2rem)] -mx-4 px-4 py-7 bg-[#EBEBEB] rounded-t-xl sm:w-full sm:mx-0 sm:p-5 sm:rounded-md text-xs">
@@ -49,6 +52,16 @@ export default function OrderSummary({
                 ${totals.subtotal.toFixed(2)}
               </span>
             </div>
+
+            {itemAndExtraOptions > 0 && (
+              <div className="flex justify-between gap-2">
+                <span>Insurance / Services</span>
+                <span className="font-semibold text-gray-800 whitespace-nowrap">
+                  ${itemAndExtraOptions.toFixed(2)}
+                </span>
+              </div>
+            )}
+
             <div className="flex justify-between gap-2">
               <span>Shipping</span>
               <span className="font-semibold text-gray-800 whitespace-nowrap">

@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import MegaMenu from "./MegaMenu";
 import CartDropdown from "./CartDropdown";
 import MobileCartSheet from "./MobileCartSheet";
-import { Link } from "react-router-dom";
+import { useCart } from "../../context/CartContext";
 import type { Product, CartItem } from "../../types/product";
 import {
   CATEGORIES,
@@ -13,15 +14,13 @@ import {
 
 type HeaderProps = {
   products?: Product[];
-  cartItems?: CartItem[];
+  cartItems?: CartItem[]; // kept optional for backwards compatibility; CartContext is the source of truth
   onMenuClick?: () => void;
 };
 
-export default function Header({
-  products = [],
-  cartItems = [],
-  onMenuClick,
-}: HeaderProps) {
+export default function Header({ products = [], onMenuClick }: HeaderProps) {
+  const { totalItemsCount } = useCart();
+
   // 1. Smart Sticky Scroll Logic
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
@@ -73,16 +72,8 @@ export default function Header({
     if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
   }
 
-  // 3. Cart State & Calculations
+  // 3. Cart State
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const totalCartCount = cartItems.reduce(
-    (acc, item) => acc + (item.quantity || 1),
-    0,
-  );
-  const totalCartCost = cartItems.reduce(
-    (acc, item) => acc + item.product.price * (item.quantity || 1),
-    0,
-  );
 
   return (
     <>
@@ -92,7 +83,7 @@ export default function Header({
         }`}
       >
         {/* ================= MOBILE HEADER (< 640px) ================= */}
-        <div className="flex flex-col gap-4 w-full max-w-[438px] mx-auto px-4 py-2 min-[640px]:hidden">
+        <div className="flex flex-col gap-4 w-full px-4 py-2 min-[640px]:hidden">
           <div className="flex items-center justify-between w-full h-[27px]">
             <button
               type="button"
@@ -111,7 +102,7 @@ export default function Header({
               </svg>
             </button>
 
-            <div className="flex items-center gap-1.5">
+            <Link to="/" className="flex items-center gap-1.5">
               <svg
                 className="h-6 w-6 text-[#4F46E5]"
                 viewBox="0 0 24 24"
@@ -124,9 +115,8 @@ export default function Header({
               <span className="text-xl font-bold tracking-tight text-slate-900">
                 Stillform
               </span>
-            </div>
+            </Link>
 
-            {/* Mobile Cart Button with stopPropagation */}
             <button
               type="button"
               onClick={(e) => {
@@ -145,9 +135,9 @@ export default function Header({
                 <path d="M5 8h14l1 13H4L5 8Z" />
                 <path d="M9 8V6a3 3 0 0 1 6 0v2" />
               </svg>
-              {totalCartCount > 0 && (
+              {totalItemsCount > 0 && (
                 <span className="absolute -top-1 -right-2.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#10B981] text-[10px] font-bold text-white">
-                  {totalCartCount}
+                  {totalItemsCount}
                 </span>
               )}
             </button>
@@ -158,8 +148,8 @@ export default function Header({
 
         {/* ================= TABLET & DESKTOP HEADER (>= 640px) ================= */}
         <div className="hidden min-[640px]:block w-full border-b border-gray-100">
-          <div className="flex items-center justify-between gap-4 px-[5%] lg:px-[4%] py-3 min-h-[56px] max-w-[1680px] mx-auto">
-            <div className="flex items-center gap-2 shrink-0 cursor-pointer">
+          <div className="flex items-center justify-between gap-4 px-4 sm:px-6 lg:px-10 xl:px-14 py-3 min-h-[56px] max-w-[1680px] mx-auto">
+            <Link to="/" className="flex items-center gap-2 shrink-0">
               <svg
                 className="w-8 h-8 text-[#4F46E5]"
                 viewBox="0 0 24 24"
@@ -173,13 +163,10 @@ export default function Header({
                   d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.7 2.39-6.314H5.106m2.394 6.314L5.106 5.272"
                 />
               </svg>
-              <Link
-                to="/"
-                className="text-2xl font-bold tracking-tight text-slate-900"
-              >
+              <span className="text-2xl font-bold tracking-tight text-slate-900">
                 Stillform
-              </Link>
-            </div>
+              </span>
+            </Link>
 
             <div className="w-full max-w-[345px] min-w-[200px]">
               <SearchBar products={products} />
@@ -235,7 +222,6 @@ export default function Header({
                 </svg>
               </a>
 
-              {/* Telegram */}
               <a
                 href="#"
                 aria-label="Telegram"
@@ -254,7 +240,7 @@ export default function Header({
 
           {/* Dark Nav Row */}
           <div className="w-full bg-[#242424] text-white">
-            <div className="flex items-center justify-between px-[5%] lg:px-[4%] h-[48px] lg:h-[80px] max-w-[1680px] mx-auto text-xs">
+            <div className="flex items-center justify-between px-4 sm:px-6 lg:px-10 xl:px-14 h-[48px] lg:h-[80px] max-w-[1680px] mx-auto text-xs">
               <div className="flex items-center gap-6 shrink-0">
                 <button
                   type="button"
@@ -289,7 +275,6 @@ export default function Header({
                 </Link>
                 <button className="hover:text-white">Favorites</button>
 
-                {/* Desktop Cart Anchor with stopPropagation */}
                 <div className="relative">
                   <button
                     type="button"
@@ -313,9 +298,9 @@ export default function Header({
                       />
                     </svg>
                     <span>Cart</span>
-                    {totalCartCount > 0 && (
+                    {totalItemsCount > 0 && (
                       <span className="flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#10B981] text-white text-[10px] font-bold">
-                        {totalCartCount}
+                        {totalItemsCount}
                       </span>
                     )}
                   </button>
@@ -323,8 +308,7 @@ export default function Header({
                   <CartDropdown
                     isOpen={isCartOpen}
                     onClose={() => setIsCartOpen(false)}
-                    cartItems={cartItems}
-                    totalCost={totalCartCost}
+                  
                   />
                 </div>
               </div>
@@ -334,7 +318,7 @@ export default function Header({
           {/* Categories Nav & MegaMenu */}
           <div
             onMouseLeave={handleMouseLeave}
-            className="relative max-w-[1680px] mx-auto px-[5%] lg:px-[4%]"
+            className="relative max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14"
           >
             <nav className="flex items-center justify-between gap-4 h-[42px] overflow-x-auto whitespace-nowrap text-xs text-gray-600 scrollbar-hide">
               {CATEGORIES.map((cat) => (
@@ -364,15 +348,9 @@ export default function Header({
         </div>
       </header>
 
-      {/* ========================================================
-          MOBILE CART SHEET: Rendered OUTSIDE <header>
-          This completely avoids the CSS transform trap!
-         ======================================================== */}
       <MobileCartSheet
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
-        cartItems={cartItems}
-        totalCost={totalCartCost}
       />
     </>
   );
