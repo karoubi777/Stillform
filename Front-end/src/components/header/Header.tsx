@@ -6,6 +6,7 @@ import CartDropdown from "./CartDropdown";
 import MobileCartSheet from "./MobileCartSheet";
 import { useCart } from "../../context/CartContext";
 import type { Product, CartItem } from "../../types/product";
+import { useLocalStorage } from "../../hooks/useStorage";
 import {
   CATEGORIES,
   buildCatalogUrl,
@@ -20,6 +21,15 @@ type HeaderProps = {
 
 export default function Header({ products = [], onMenuClick }: HeaderProps) {
   const { totalItemsCount } = useCart();
+  const [currency, setCurrency] = useLocalStorage<"EUR" | "USD">(
+    "stillform_currency",
+    "EUR",
+  );
+
+  const [language, setLanguage] = useLocalStorage<"Deutsch" | "English">(
+    "stillform_language",
+    "Deutsch",
+  );
 
   // 1. Smart Sticky Scroll Logic
   const [isVisible, setIsVisible] = useState(true);
@@ -239,6 +249,7 @@ export default function Header({ products = [], onMenuClick }: HeaderProps) {
           </div>
 
           {/* Dark Nav Row */}
+
           <div className="w-full bg-[#242424] text-white">
             <div className="flex items-center justify-between px-4 sm:px-6 lg:px-10 xl:px-14 h-[48px] lg:h-[80px] max-w-[1680px] mx-auto text-xs">
               <div className="flex items-center gap-6 shrink-0">
@@ -250,8 +261,57 @@ export default function Header({ products = [], onMenuClick }: HeaderProps) {
                   <span>☰</span> Categories
                 </button>
                 <div className="flex items-center gap-3 text-neutral-300 text-[11px]">
-                  <button>USD ▾</button>
-                  <button>English ▾</button>
+                  {/* Currency */}
+                  <div className="relative">
+                    <select
+                      value={currency}
+                      onChange={(e) =>
+                        setCurrency(e.target.value as "USD" | "EUR")
+                      }
+                      className="appearance-none bg-transparent pr-4 cursor-pointer outline-none"
+                      aria-label="Select currency"
+                    >
+                      <option value="EUR" className="bg-neutral-900 text-white">
+                        USD
+                      </option>
+                      <option value="USD" className="bg-neutral-900 text-white">
+                        EUR
+                      </option>
+                    </select>
+
+                    <span className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
+                      ▾
+                    </span>
+                  </div>
+
+                  {/* Language */}
+                  <div className="relative">
+                    <select
+                      value={language}
+                      onChange={(e) =>
+                        setLanguage(e.target.value as "English" | "Deutsch")
+                      }
+                      className="appearance-none bg-transparent pr-4 cursor-pointer outline-none"
+                      aria-label="Select language"
+                    >
+                      <option
+                        value="Deutsch"
+                        className="bg-neutral-900 text-white"
+                      >
+                        English
+                      </option>
+                      <option
+                        value="English"
+                        className="bg-neutral-900 text-white"
+                      >
+                        Deutsch
+                      </option>
+                    </select>
+
+                    <span className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
+                      ▾
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -268,7 +328,6 @@ export default function Header({ products = [], onMenuClick }: HeaderProps) {
                   </p>
                 </div>
               </div>
-
               <div className="flex items-center gap-6 shrink-0 text-neutral-200">
                 <Link to="/auth" className="hover:text-white">
                   Sign in
@@ -308,7 +367,6 @@ export default function Header({ products = [], onMenuClick }: HeaderProps) {
                   <CartDropdown
                     isOpen={isCartOpen}
                     onClose={() => setIsCartOpen(false)}
-                  
                   />
                 </div>
               </div>

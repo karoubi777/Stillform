@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+import { useSessionStorage } from "../hooks/useStorage";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { recommendedProducts } from "../mockProducts";
@@ -8,9 +8,8 @@ import { PAYMENT_METHODS, SHIPPING_METHODS } from "../data/checkoutMethods";
 
 import CheckoutStepper from "../components/cart/CheckoutStepper";
 import CartItemsList from "../components/cart/CartItemsList";
-import CustomerInfoStep, {
-  validateCustomerInfo,
-} from "../components/cart/CustomerInfoStep";
+import CustomerInfoStep from "../components/cart/CustomerInfoStep";
+import { validateCustomerInfo } from "../hooks/validateCustomerInfo";
 import ShippingPaymentStep, {
   isShippingAvailableForCountry,
 } from "../components/cart/ShippingPaymentStep";
@@ -63,22 +62,29 @@ export default function CartPage() {
   const packInGiftBox = hasOrderOption(GIFT_BOX_OPTION.id);
 
   // Customer Info State
-  const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
-    email: "",
-    firstName: "",
-    lastName: "",
-    country: "US",
-    state: "",
-    address: "",
-    phone: "",
-  });
-  const [showCustomerErrors, setShowCustomerErrors] = useState(false);
+  const [customerInfo, setCustomerInfo] = useSessionStorage<CustomerInfo>(
+    "checkout_customer_info",
+    {
+      email: "",
+      firstName: "",
+      lastName: "",
+      country: "US",
+      state: "",
+      address: "",
+      phone: "",
+    },
+  );
 
   // Shipping & Payment State
-  const [selectedPaymentId, setSelectedPaymentId] = useState<string>(
+  const [selectedPaymentId, setSelectedPaymentId] = useSessionStorage<string>(
+    "checkout_payment_id",
     PAYMENT_METHODS.find((m) => m.available)?.id ?? "",
   );
-  const [selectedShippingId, setSelectedShippingId] = useState<string>("");
+  const [selectedShippingId, setSelectedShippingId] = useSessionStorage<string>(
+    "checkout_shipping_id",
+    "",
+  );
+
   const [showShippingPaymentErrors, setShowShippingPaymentErrors] =
     useState(false);
 
@@ -170,7 +176,7 @@ export default function CartPage() {
 
     setCurrentStep(targetStep);
   }
-
+  const [showCustomerErrors, setShowCustomerErrors] = useState(false);
   function handleAdvanceStep() {
     if (!hasCartContent) return;
 
@@ -201,13 +207,14 @@ export default function CartPage() {
 
   function handleMockPlaceOrder() {
     setIsSubmittingOrder(true);
-    // Replace setTimeout with your real POST /orders API call later
     window.setTimeout(() => {
       const mockOrderNumber = `SF-${Math.floor(100000 + Math.random() * 900000)}`;
       setIsSubmittingOrder(false);
       setIsConfirmModalOpen(false);
       setPlacedOrderId(mockOrderNumber);
       clearCart();
+      setSelectedShippingId("");
+      setIsOrderConfirmed(false);
     }, 600);
   }
 

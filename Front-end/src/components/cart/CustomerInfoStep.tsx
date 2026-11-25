@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { COUNTRIES, searchStatesByRelevance } from "../../data/locations";
 import type { CountryOption, CustomerInfo } from "../../types/product";
+import { validateCustomerInfo } from "../../hooks/validateCustomerInfo";
 
 interface CustomerInfoStepProps {
   value: CustomerInfo;
@@ -22,7 +23,6 @@ function CountryFlag({ code }: { code: CountryOption["code"] }) {
     );
   }
 
-  // US Flag
   return (
     <svg
       className="w-5 h-3.5 rounded-[2px] shrink-0 border border-gray-200"
@@ -39,32 +39,6 @@ function CountryFlag({ code }: { code: CountryOption["code"] }) {
   );
 }
 
-export function validateCustomerInfo(info: CustomerInfo) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const selectedCountry = COUNTRIES.find((c) => c.code === info.country);
-  const validStates = selectedCountry?.states ?? [];
-  const phoneDigits = info.phone.replace(/\D/g, "");
-
-  return {
-    email: !info.email.trim()
-      ? "Email is required"
-      : !emailRegex.test(info.email.trim())
-        ? "Enter a valid email address"
-        : "",
-    firstName: !info.firstName.trim() ? "First name is required" : "",
-    lastName: !info.lastName.trim() ? "Last name is required" : "",
-    country: !selectedCountry ? "Please select a country" : "",
-    state: !info.state.trim()
-      ? "State/Region is required"
-      : !validStates.includes(info.state)
-        ? "Please select a valid state/region from the list"
-        : "",
-    address:
-      info.address.trim().length < 3 ? "Please enter your street address" : "",
-    phone: phoneDigits.length < 6 ? "Enter a valid phone number" : "",
-  };
-}
-
 export default function CustomerInfoStep({
   value,
   onChange,
@@ -74,11 +48,9 @@ export default function CustomerInfoStep({
     Partial<Record<keyof CustomerInfo, boolean>>
   >({});
 
-  // Country dropdown state
   const [countryOpen, setCountryOpen] = useState(false);
   const countryRef = useRef<HTMLDivElement>(null);
 
-  // State/Region searchable dropdown state
   const [stateOpen, setStateOpen] = useState(false);
   const [stateQuery, setStateQuery] = useState(value.state);
   const stateRef = useRef<HTMLDivElement>(null);
@@ -87,7 +59,6 @@ export default function CustomerInfoStep({
     setStateQuery(value.state);
   }, [value.state]);
 
-  // Close dropdowns on outside click
   useEffect(() => {
     function handleOutsideClick(e: MouseEvent) {
       if (
@@ -111,7 +82,6 @@ export default function CustomerInfoStep({
 
   const filteredStates = useMemo(() => {
     const states = selectedCountry?.states ?? [];
-    // If the input exactly matches the already-selected state, show full list when opened
     if (stateQuery === value.state && value.state !== "") {
       return states;
     }
@@ -143,11 +113,17 @@ export default function CustomerInfoStep({
       <div className="flex flex-col gap-4">
         {/* E-mail */}
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1.5">
+          <label
+            htmlFor="checkout-email"
+            className="block text-xs font-medium text-gray-600 mb-1.5"
+          >
             E-mail
           </label>
           <input
+            id="checkout-email"
+            name="email"
             type="email"
+            autoComplete="email"
             value={value.email}
             onChange={(e) => onChange({ ...value, email: e.target.value })}
             onBlur={() => markTouched("email")}
@@ -159,14 +135,20 @@ export default function CustomerInfoStep({
           )}
         </div>
 
-        {/* First Name & Last Name (2 columns on all breakpoints) */}
+        {/* First Name & Last Name */}
         <div className="grid grid-cols-2 gap-3 sm:gap-4">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1.5">
+            <label
+              htmlFor="checkout-first-name"
+              className="block text-xs font-medium text-gray-600 mb-1.5"
+            >
               First Name
             </label>
             <input
+              id="checkout-first-name"
+              name="given-name"
               type="text"
+              autoComplete="given-name"
               value={value.firstName}
               onChange={(e) =>
                 onChange({ ...value, firstName: e.target.value })
@@ -182,11 +164,17 @@ export default function CustomerInfoStep({
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1.5">
+            <label
+              htmlFor="checkout-last-name"
+              className="block text-xs font-medium text-gray-600 mb-1.5"
+            >
               Last Name
             </label>
             <input
+              id="checkout-last-name"
+              name="family-name"
               type="text"
+              autoComplete="family-name"
               value={value.lastName}
               onChange={(e) => onChange({ ...value, lastName: e.target.value })}
               onBlur={() => markTouched("lastName")}
@@ -286,12 +274,18 @@ export default function CustomerInfoStep({
 
         {/* State/Region Searchable Combobox */}
         <div ref={stateRef} className="relative">
-          <label className="block text-xs font-medium text-gray-600 mb-1.5">
+          <label
+            htmlFor="checkout-state"
+            className="block text-xs font-medium text-gray-600 mb-1.5"
+          >
             State/Region
           </label>
           <div className="relative">
             <input
+              id="checkout-state"
+              name="address-level1"
               type="text"
+              autoComplete="address-level1"
               disabled={!selectedCountry}
               value={stateQuery}
               onFocus={() => {
@@ -300,10 +294,20 @@ export default function CustomerInfoStep({
               onChange={(e) => {
                 const next = e.target.value;
                 setStateQuery(next);
-                setStateOpen(true);
-                // Clear confirmed state if user modifies text away from a valid match
-                if (value.state && next !== value.state) {
-                  onChange({ ...value, state: "" });
+
+                const exactMatch = (selectedCountry?.states ?? []).find(
+                  (s) => s.toLowerCase() === next.trim().toLowerCase(),
+                );
+
+                if (exactMatch) {
+                  onChange({ ...value, state: exactMatch });
+                  setStateQuery(exactMatch);
+                  setStateOpen(false);
+                } else {
+                  setStateOpen(true);
+                  if (value.state && next !== value.state) {
+                    onChange({ ...value, state: "" });
+                  }
                 }
               }}
               onBlur={() => markTouched("state")}
@@ -379,11 +383,17 @@ export default function CustomerInfoStep({
 
         {/* Address */}
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1.5">
+          <label
+            htmlFor="checkout-address"
+            className="block text-xs font-medium text-gray-600 mb-1.5"
+          >
             Address
           </label>
           <input
+            id="checkout-address"
+            name="street-address"
             type="text"
+            autoComplete="street-address"
             value={value.address}
             onChange={(e) => onChange({ ...value, address: e.target.value })}
             onBlur={() => markTouched("address")}
@@ -396,11 +406,17 @@ export default function CustomerInfoStep({
 
         {/* Phone Number */}
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1.5">
+          <label
+            htmlFor="checkout-phone"
+            className="block text-xs font-medium text-gray-600 mb-1.5"
+          >
             Phone Number
           </label>
           <input
+            id="checkout-phone"
+            name="tel"
             type="tel"
+            autoComplete="tel"
             value={value.phone}
             onChange={(e) => onChange({ ...value, phone: e.target.value })}
             onBlur={() => markTouched("phone")}

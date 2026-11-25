@@ -13,7 +13,7 @@ export default function CheckoutStepper({
   onStepChange,
 }: CheckoutStepperProps) {
   const steps: { id: CheckoutStep; label: string }[] = [
-    { id: "cart", label: `CARD(${cartCount})` },
+    { id: "cart", label: `CART(${cartCount})` },
     { id: "customer-info", label: "CUSTOMER INFO" },
     { id: "shipping-payment", label: "SHIPPING & PAYMENT" },
     { id: "confirmation", label: "PRODUCT CONFIRMATION" },
