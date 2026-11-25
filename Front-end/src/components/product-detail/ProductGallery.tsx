@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-
 interface ProductGalleryProps {
   images: string[];
   productName: string;
-  activeImage?: string;
+  activeImage: string;
+  onSelectImage: (image: string) => void;
+  onPreviewImage?: (image: string) => void;
   isFavorite: boolean;
   onToggleFavorite: () => void;
 }
@@ -12,45 +12,43 @@ export default function ProductGallery({
   images,
   productName,
   activeImage,
+  onSelectImage,
+  onPreviewImage,
   isFavorite,
   onToggleFavorite,
 }: ProductGalleryProps) {
   const safeImages = images.length > 0 ? images : [""];
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
-  useEffect(() => {
-    if (!activeImage) return;
-    const idx = safeImages.indexOf(activeImage);
-    if (idx !== -1) setSelectedIndex(idx);
-  }, [activeImage, safeImages]);
-
-  const currentImage = safeImages[selectedIndex] || safeImages[0];
+  const activeIndex = Math.max(0, safeImages.indexOf(activeImage));
+  const currentImage = safeImages[activeIndex] || safeImages[0];
 
   return (
     <div className="w-full flex flex-col sm:flex-row gap-3 lg:gap-4">
       {/* DESKTOP & TABLET: Vertical Thumbnails on Left */}
       <div className="hidden sm:flex flex-col gap-2.5 w-16 lg:w-20 shrink-0 max-h-[540px] overflow-y-auto">
-        {safeImages.map((img, idx) => (
-          <button
-            key={`${img}-${idx}`}
-            type="button"
-            onMouseEnter={() => setSelectedIndex(idx)}
-            onClick={() => setSelectedIndex(idx)}
-            aria-label={`View image ${idx + 1}`}
-            aria-pressed={selectedIndex === idx}
-            className={`w-full aspect-[3/4] rounded overflow-hidden border transition-all duration-200 ${
-              selectedIndex === idx
-                ? "border-gray-900 ring-1 ring-gray-900"
-                : "border-gray-200 opacity-75 hover:opacity-100"
-            }`}
-          >
-            <img
-              src={img}
-              alt={`${productName} view ${idx + 1}`}
-              className="w-full h-full object-cover bg-[#F5F6F6]"
-            />
-          </button>
-        ))}
+        {safeImages.map((img, idx) => {
+          const isSelected = idx === activeIndex;
+          return (
+            <button
+              key={`${img}-${idx}`}
+              type="button"
+              onMouseEnter={() => onPreviewImage?.(img)}
+              onClick={() => onSelectImage(img)}
+              aria-label={`View image ${idx + 1}`}
+              aria-pressed={isSelected}
+              className={`w-full aspect-[3/4] rounded overflow-hidden border transition-all duration-200 ${
+                isSelected
+                  ? "border-gray-900 ring-1 ring-gray-900"
+                  : "border-gray-200 opacity-75 hover:opacity-100"
+              }`}
+            >
+              <img
+                src={img}
+                alt={`${productName} view ${idx + 1}`}
+                className="w-full h-full object-cover bg-[#F5F6F6]"
+              />
+            </button>
+          );
+        })}
       </div>
 
       {/* MAIN IMAGE */}
@@ -88,14 +86,14 @@ export default function ProductGallery({
         {/* Mobile Pagination Dots */}
         {safeImages.length > 1 && (
           <div className="sm:hidden absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-600/60 backdrop-blur-xs">
-            {safeImages.map((_, idx) => (
+            {safeImages.map((img, idx) => (
               <button
                 key={idx}
                 type="button"
                 aria-label={`View image ${idx + 1}`}
-                onClick={() => setSelectedIndex(idx)}
+                onClick={() => onSelectImage(img)}
                 className={`w-2 h-2 rounded-full transition-all ${
-                  selectedIndex === idx ? "bg-white scale-110" : "bg-white/50"
+                  idx === activeIndex ? "bg-white scale-110" : "bg-white/50"
                 }`}
               />
             ))}
@@ -109,9 +107,9 @@ export default function ProductGallery({
           <button
             key={`mob-${img}-${idx}`}
             type="button"
-            onClick={() => setSelectedIndex(idx)}
+            onClick={() => onSelectImage(img)}
             className={`w-16 aspect-[3/4] shrink-0 rounded overflow-hidden border transition ${
-              selectedIndex === idx
+              idx === activeIndex
                 ? "border-gray-900"
                 : "border-gray-200 opacity-75"
             }`}

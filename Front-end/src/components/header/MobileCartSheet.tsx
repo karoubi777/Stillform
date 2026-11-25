@@ -62,10 +62,7 @@ export default function MobileCartSheet({
             <div className="flex flex-col divide-y divide-gray-100">
               {items.map((item) => {
                 const thumbnail =
-                  item.variant.image ||
-                  item.product.image ||
-                  item.product.images?.[0] ||
-                  "";
+                  item.variant.images?.[0] || item.product.image || "";
 
                 return (
                   <div key={item.id} className="flex items-center gap-3 py-3">

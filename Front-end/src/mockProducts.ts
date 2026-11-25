@@ -90,14 +90,14 @@ export const mockTopProducts: Product[] = [
         color: { id: 1, name: "Red", hex: "#E11D48" },
         size: "M",
         stock: 6,
-        image: "/images/homepage/top100/photo-1.png",
+        images: ["/images/homepage/top100/photo-1.png"],
       },
       {
         id: 1012,
         color: { id: 2, name: "Black", hex: "#1F2937" },
         size: "L",
         stock: 4,
-        image: "/images/homepage/top100/photo-1.png",
+        images: ["/images/homepage/top100/photo-1.png"],
       },
     ],
   },
@@ -111,7 +111,7 @@ export const mockTopProducts: Product[] = [
     rating: 5,
     reviews: 523,
     reviewCount: 3,
-    gender: "womman",
+    gender: "Women",
     sizing: clothingSizing,
     variants: [
       {
@@ -119,7 +119,7 @@ export const mockTopProducts: Product[] = [
         color: { id: 1, name: "Red", hex: "#E11D48" },
         size: "S",
         stock: 8,
-        image: "/images/homepage/top100/photo-2.png",
+        images: ["/images/homepage/top100/photo-2.png"],
       },
     ],
   },
@@ -133,7 +133,7 @@ export const mockTopProducts: Product[] = [
     rating: 5,
     reviews: 106,
     reviewCount: 0,
-    gender: "womman",
+    gender: "Women",
     sizing: clothingSizing,
     variants: [
       {
@@ -141,7 +141,7 @@ export const mockTopProducts: Product[] = [
         color: { id: 3, name: "Sky Blue", hex: "#60A5FA" },
         size: "M",
         stock: 5,
-        image: "/images/homepage/top100/photo-3.png",
+        images: ["/images/homepage/top100/photo-3.png"],
       },
     ],
   },
@@ -155,7 +155,7 @@ export const mockTopProducts: Product[] = [
     rating: 5,
     reviews: 121,
     reviewCount: 0,
-    gender: "womman",
+    gender: "Women",
     sizing: clothingSizing,
     variants: [
       {
@@ -163,7 +163,7 @@ export const mockTopProducts: Product[] = [
         color: { id: 4, name: "Mustard", hex: "#D4C257" },
         size: "L",
         stock: 3,
-        image: "/images/homepage/top100/photo-4.png",
+        images: ["/images/homepage/top100/photo-4.png"],
       },
     ],
   },
@@ -213,14 +213,14 @@ export const mockFlashSales: FlashSaleProduct[] = [
     brand: "Tonny Black",
     name: "Shoulder bag-White-Plain",
     image: "/images/homepage/flash-sales/bag.jpg",
-    images: ["/images/homepage/flash-sales/bag.jpg"],
+
     price: 69.99,
     originalPrice: 129.99,
     rating: 4,
     reviews: 54,
     endTime: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
     reviewCount: 0,
-    gender: "woman",
+    gender: "Women",
     sizing: bagSizing,
     variants: [
       {
@@ -228,7 +228,7 @@ export const mockFlashSales: FlashSaleProduct[] = [
         color: { id: 5, name: "White", hex: "#F9FAFB" },
         size: "One Size",
         stock: 10,
-        image: "/images/homepage/flash-sales/bag.jpg",
+        images: ["/images/homepage/flash-sales/bag.jpg"],
       },
     ],
   },
@@ -243,7 +243,7 @@ export const mockFlashSales: FlashSaleProduct[] = [
     reviews: 54,
     endTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
     reviewCount: 0,
-    gender: "woman",
+    gender: "Women",
     sizing: shoeSizing,
     variants: [
       {
@@ -251,7 +251,7 @@ export const mockFlashSales: FlashSaleProduct[] = [
         color: { id: 6, name: "Beige", hex: "#E5D3B3" },
         size: "38",
         stock: 7,
-        image: "/images/homepage/flash-sales/shoe.png",
+        images: ["/images/homepage/flash-sales/shoe.png"],
       },
     ],
   },
@@ -268,7 +268,7 @@ export const mockFlashSales: FlashSaleProduct[] = [
       Date.now() + 2 * 60 * 60 * 1000 + 14 * 60 * 1000,
     ).toISOString(),
     reviewCount: 0,
-    gender: "woman",
+    gender: "Women",
     sizing: bagSizing,
     variants: [
       {
@@ -276,7 +276,7 @@ export const mockFlashSales: FlashSaleProduct[] = [
         color: { id: 7, name: "Pink", hex: "#F472B6" },
         size: "One Size",
         stock: 5,
-        image: "/images/homepage/flash-sales/bag-2.jpg",
+        images: ["/images/homepage/flash-sales/bag-2.jpg"],
       },
     ],
   },
@@ -291,7 +291,7 @@ export const mockFlashSales: FlashSaleProduct[] = [
     reviews: 54,
     endTime: new Date(Date.now() + 25 * 60 * 60 * 1000).toISOString(),
     reviewCount: 0,
-    gender: "woman",
+    gender: "Women",
     sizing: shoeSizing,
     variants: [
       {
@@ -299,7 +299,7 @@ export const mockFlashSales: FlashSaleProduct[] = [
         color: { id: 2, name: "Black", hex: "#1F2937" },
         size: "39",
         stock: 12,
-        image: "/images/homepage/flash-sales/shoe2.jpg",
+        images: ["/images/homepage/flash-sales/shoe2.jpg"],
       },
     ],
   },
@@ -362,7 +362,7 @@ export const recommendedProducts: Product[] = [
     reviews: 32,
     reviewCount: 12,
     image: "/images/cart/recommended-1.png",
-    gender: "woman",
+    gender: "Women",
     sizing: clothingSizing,
     variants: [
       {
@@ -370,7 +370,7 @@ export const recommendedProducts: Product[] = [
         color: { id: 8, name: "Blue", hex: "#2563EB" },
         size: "S",
         stock: 6,
-        image: "/images/cart/recommended-1.png",
+        images: ["/images/cart/recommended-1.png"],
       },
     ],
   },
@@ -384,7 +384,7 @@ export const recommendedProducts: Product[] = [
     reviews: 28,
     reviewCount: 9,
     image: "/images/cart/recommended-2.png",
-    gender: "woman",
+    gender: "Women",
     sizing: clothingSizing,
     variants: [
       {
@@ -392,7 +392,7 @@ export const recommendedProducts: Product[] = [
         color: { id: 9, name: "Navy", hex: "#1E3A8A" },
         size: "M",
         stock: 5,
-        image: "/images/cart/recommended-2.png",
+        images: ["/images/cart/recommended-2.png"],
       },
     ],
   },
@@ -406,7 +406,7 @@ export const recommendedProducts: Product[] = [
     reviews: 41,
     reviewCount: 15,
     image: "/images/cart/recommended-3.png",
-    gender: "woman",
+    gender: "Women",
     sizing: clothingSizing,
     variants: [
       {
@@ -414,7 +414,7 @@ export const recommendedProducts: Product[] = [
         color: { id: 7, name: "Pink", hex: "#EC4899" },
         size: "S",
         stock: 9,
-        image: "/images/cart/recommended-3.png",
+        images: ["/images/cart/recommended-3.png"],
       },
     ],
   },
@@ -428,7 +428,7 @@ export const recommendedProducts: Product[] = [
     reviews: 19,
     reviewCount: 6,
     image: "/images/cart/recommended-4.png",
-    gender: "woman",
+    gender: "Women",
     sizing: clothingSizing,
     variants: [
       {
@@ -436,7 +436,7 @@ export const recommendedProducts: Product[] = [
         color: { id: 10, name: "Mint", hex: "#34D399" },
         size: "M",
         stock: 4,
-        image: "/images/cart/recommended-4.png",
+        images: ["/images/cart/recommended-4.png"],
       },
     ],
   },
@@ -450,7 +450,7 @@ export const recommendedProducts: Product[] = [
     reviews: 22,
     reviewCount: 7,
     image: "/images/cart/recommended-1.png",
-    gender: "woman",
+    gender: "Women",
     sizing: clothingSizing,
     variants: [
       {
@@ -458,7 +458,7 @@ export const recommendedProducts: Product[] = [
         color: { id: 8, name: "Blue", hex: "#2563EB" },
         size: "L",
         stock: 3,
-        image: "/images/cart/recommended-1.png",
+        images: ["/images/cart/recommended-1.png"],
       },
     ],
   },

@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type { Product, ProductVariant } from "../../types/product";
-
 interface PurchaseActionsBoxProps {
   unitPrice: number;
   quantity: number;
@@ -111,43 +110,44 @@ export default function ProductInfoPanel({
 }: ProductInfoPanelProps) {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
 
-  const uniqueColors = Array.from(
-    new Map(
-      product.variants.map((variant) => [variant.color.id, variant]),
-    ).values(),
+  const uniqueColors = useMemo(
+    () =>
+      Array.from(
+        new Map(
+          product.variants.map((variant) => [variant.color.id, variant]),
+        ).values(),
+      ),
+    [product.variants],
   );
 
-  const availableSizes = Array.from(
-    new Set(
-      product.variants
-        .map((variant) => variant.size)
-        .filter((size): size is string => size !== null),
-    ),
-  );
+  const sortedSizes = useMemo(() => {
+    const availableSizes = Array.from(
+      new Set(
+        product.variants
+          .map((variant) => variant.size)
+          .filter((size): size is string => size !== null),
+      ),
+    );
 
-  const alphaSizeOrder = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
+    const alphaSizeOrder = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 
-  const sortedSizes = [...availableSizes].sort((a, b) => {
-    if (product.sizing.type === "alpha") {
-      const aIndex = alphaSizeOrder.indexOf(a.toUpperCase());
-      const bIndex = alphaSizeOrder.indexOf(b.toUpperCase());
+    return [...availableSizes].sort((a, b) => {
+      if (product.sizing.type === "alpha") {
+        const aIndex = alphaSizeOrder.indexOf(a.toUpperCase());
+        const bIndex = alphaSizeOrder.indexOf(b.toUpperCase());
+        if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+        return a.localeCompare(b);
+      }
 
-      if (aIndex !== -1 && bIndex !== -1) {
-        return aIndex - bIndex;
+      const aNumber = Number(a);
+      const bNumber = Number(b);
+      if (Number.isFinite(aNumber) && Number.isFinite(bNumber)) {
+        return aNumber - bNumber;
       }
 
       return a.localeCompare(b);
-    }
-
-    const aNumber = Number(a);
-    const bNumber = Number(b);
-
-    if (Number.isFinite(aNumber) && Number.isFinite(bNumber)) {
-      return aNumber - bNumber;
-    }
-
-    return a.localeCompare(b);
-  });
+    });
+  }, [product.variants, product.sizing.type]);
 
   const sizeOptions =
     product.sizing.type === "one-size" ? ["One Size"] : sortedSizes;

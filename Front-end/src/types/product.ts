@@ -75,7 +75,7 @@ export type Product = {
   reviews: number;
   image: string;
   reviewCount: number;
-  images?: string[];
+
   brand: string;
   category?: string;
   model?: string;
@@ -93,7 +93,7 @@ export type ProductVariant = {
   };
   size: string | null;
   stock: number;
-  image: string;
+    images: string[];
 };
 
 export type FlashSaleProduct = Product & {

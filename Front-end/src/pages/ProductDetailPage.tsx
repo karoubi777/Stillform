@@ -1,7 +1,10 @@
 import { useState, useMemo, useEffect } from "react";
 import { useParams, useLocation, useNavigate, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import type { CartItemOption } from "../types/product";
+import { useFavorites } from "../hooks/useFavorites";
+import { recommendedProducts } from "../mockProducts";
+import RecommendedProducts from "../components/shared/RecommendedProducts";
+
 import {
   fetchProductById,
   fetchProductDetails,
@@ -14,6 +17,7 @@ import ProductInfoPanel, {
 } from "../components/product-detail/ProductInfoPanel";
 import ProductDetailTabs from "../components/product-detail/ProductDetailTabs";
 import type {
+  CartItemOption,
   CountryOption,
   DetailTab,
   PaymentMethod,
@@ -24,30 +28,12 @@ import type {
   ShippingMethod,
 } from "../types/product";
 
-interface ProductDetailPageProps {
-  onAddToCart?: (
-    product: Product,
-    variant: ProductVariant,
-    quantity: number,
-  ) => void;
-}
-
-export default function ProductDetailPage({}: ProductDetailPageProps) {
+export default function ProductDetailPage() {
   const { addToCart } = useCart();
+  const { isFavorite: checkIsFavorite, toggleFavorite } = useFavorites();
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
-  function buildSelectedOptions(): CartItemOption[] {
-    if (!addInsurance) return [];
-    return [
-      {
-        id: "item-shipping-insurance",
-        type: "insurance",
-        label: "Shipping Insurance",
-        price: 9,
-      },
-    ];
-  }
 
   const passedProduct = (location.state as { product?: Product } | null)
     ?.product;
@@ -80,23 +66,18 @@ export default function ProductDetailPage({}: ProductDetailPageProps) {
     useState<CountryOption["code"]>("US");
   const [hasLoadedShipping, setHasLoadedShipping] = useState(false);
 
-  // UI Interaction State
+  // Synchronized Variant & Gallery Image State
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
     hasMatchingPassedProduct ? (passedProduct.variants[0] ?? null) : null,
+  );
+  const [activeImage, setActiveImage] = useState<string>(
+    hasMatchingPassedProduct
+      ? passedProduct.variants[0]?.images[0] || passedProduct.image
+      : "",
   );
   const [quantity, setQuantity] = useState(1);
   const [addInsurance, setAddInsurance] = useState(false);
   const [activeTab, setActiveTab] = useState<DetailTab>("details");
-
-  // Favorites State
-  const [favoriteIds, setFavoriteIds] = useState<number[]>(() => {
-    try {
-      const saved = localStorage.getItem("favorite_product_ids");
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
 
   // 1. Load Product + ProductDetails when :id changes
   useEffect(() => {
@@ -109,15 +90,21 @@ export default function ProductDetailPage({}: ProductDetailPageProps) {
       setQuantity(1);
 
       if (hasMatchingPassedProduct && passedProduct) {
+        const defaultVariant = passedProduct.variants[0] ?? null;
         setProduct(passedProduct);
-        setSelectedVariant(passedProduct.variants[0] ?? null);
+        setSelectedVariant(defaultVariant);
+        setActiveImage(defaultVariant?.images[0] || passedProduct.image);
         setIsLoadingProduct(false);
       } else {
         setIsLoadingProduct(true);
         const fetchedProduct = await fetchProductById(numericId);
         if (cancelled) return;
+        const defaultVariant = fetchedProduct?.variants[0] ?? null;
         setProduct(fetchedProduct);
-        setSelectedVariant(fetchedProduct?.variants[0] ?? null);
+        setSelectedVariant(defaultVariant);
+        setActiveImage(
+          defaultVariant?.images[0] || fetchedProduct?.image || "",
+        );
         setIsLoadingProduct(false);
       }
 
@@ -184,25 +171,71 @@ export default function ProductDetailPage({}: ProductDetailPageProps) {
     };
   }, [activeTab, hasLoadedShipping]);
 
+  // Memoized stable list of gallery images (variant images + product images)
   const galleryImages = useMemo(() => {
     if (!product) return [];
     const imgs = [
       product.image,
-      ...(product.images ?? []),
-      ...product.variants.map((v) => v.image),
+      ...product.variants.flatMap((v) => v.images),
     ].filter(Boolean);
     return Array.from(new Set(imgs));
   }, [product]);
 
-  function handleToggleFavorite() {
-    if (!product) return;
-    setFavoriteIds((prev) => {
-      const next = prev.includes(product.id)
-        ? prev.filter((fid) => fid !== product.id)
-        : [...prev, product.id];
-      localStorage.setItem("favorite_product_ids", JSON.stringify(next));
-      return next;
-    });
+  // Memoized map: image URL -> all variants sharing that image
+  const variantsByImage = useMemo(() => {
+    const map = new Map<string, ProductVariant[]>();
+    if (!product) return map;
+    for (const variant of product.variants) {
+      for (const img of variant.images) {
+        if (!img) continue;
+        const list = map.get(img) ?? [];
+        list.push(variant);
+        map.set(img, list);
+      }
+    }
+    return map;
+  }, [product]);
+
+  // InfoPanel -> Gallery sync
+  function handleSelectVariant(variant: ProductVariant) {
+    setSelectedVariant(variant);
+    setQuantity((q) => Math.min(q, Math.max(1, variant.stock)));
+    if (variant.images[0]) {
+      setActiveImage(variant.images[0]);
+    }
+  }
+
+  // Gallery -> InfoPanel sync (reverse direction)
+  function handleSelectGalleryImage(image: string) {
+    setActiveImage(image);
+
+    if (!selectedVariant || selectedVariant.images.includes(image)) return;
+
+    const matchingVariants = variantsByImage.get(image);
+    if (!matchingVariants || matchingVariants.length === 0) return;
+
+    const sameSizeInStock = matchingVariants.find(
+      (v) => v.size === selectedVariant.size && v.stock > 0,
+    );
+    const anyInStock = matchingVariants.find((v) => v.stock > 0);
+    const nextVariant = sameSizeInStock || anyInStock || matchingVariants[0];
+
+    if (nextVariant) {
+      setSelectedVariant(nextVariant);
+      setQuantity((q) => Math.min(q, Math.max(1, nextVariant.stock)));
+    }
+  }
+
+  function buildSelectedOptions(): CartItemOption[] {
+    if (!addInsurance) return [];
+    return [
+      {
+        id: "item-shipping-insurance",
+        type: "insurance",
+        label: "Shipping Insurance",
+        price: 9,
+      },
+    ];
   }
 
   function handleQuantityChange(delta: number) {
@@ -290,7 +323,7 @@ export default function ProductDetailPage({}: ProductDetailPageProps) {
     );
   }
 
-  const isFavorite = favoriteIds.includes(product.id);
+  const isFavorite = checkIsFavorite(product.id);
 
   return (
     <div className="w-full bg-white py-5 sm:py-7 px-4 sm:px-6 lg:px-[8.5%] max-w-[1440px] mx-auto text-left">
@@ -306,7 +339,7 @@ export default function ProductDetailPage({}: ProductDetailPageProps) {
         {product.category && (
           <>
             <Link
-              to={`/products?category=${encodeURIComponent(product.category)}`}
+              to={`/catalog?category=${encodeURIComponent(product.category)}`}
               className="hover:text-gray-900"
             >
               {product.category}
@@ -316,35 +349,32 @@ export default function ProductDetailPage({}: ProductDetailPageProps) {
         )}
         <span className="text-gray-700 font-medium">{product.brand}</span>
       </nav>
-
       {/* Top Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-start">
         <ProductGallery
           images={galleryImages}
           productName={product.name}
-          activeImage={selectedVariant.image}
+          activeImage={activeImage}
+          onSelectImage={handleSelectGalleryImage}
+          onPreviewImage={setActiveImage}
           isFavorite={isFavorite}
-          onToggleFavorite={handleToggleFavorite}
+          onToggleFavorite={() => toggleFavorite(product.id)}
         />
 
         <ProductInfoPanel
           product={product}
           selectedVariant={selectedVariant}
-          onSelectVariant={(variant) => {
-            setSelectedVariant(variant);
-            setQuantity((q) => Math.min(q, Math.max(1, variant.stock)));
-          }}
+          onSelectVariant={handleSelectVariant}
           quantity={quantity}
           onQuantityChange={handleQuantityChange}
           isFavorite={isFavorite}
-          onToggleFavorite={handleToggleFavorite}
+          onToggleFavorite={() => toggleFavorite(product.id)}
           addInsurance={addInsurance}
           onToggleInsurance={setAddInsurance}
           onShopNow={handleShopNow}
           onAddToBasket={handleAddToBasket}
         />
       </div>
-
       {/* Tabs Section */}
       <ProductDetailTabs
         product={product}
@@ -362,7 +392,6 @@ export default function ProductDetailPage({}: ProductDetailPageProps) {
         shippingMethods={shippingMethods}
         paymentMethods={paymentMethods}
       />
-
       {/* Mobile Bottom Purchase Box */}
       <div className="sm:hidden mt-8 pt-4">
         <PurchaseActionsBox
@@ -375,6 +404,10 @@ export default function ProductDetailPage({}: ProductDetailPageProps) {
           disabled={selectedVariant.stock <= 0}
         />
       </div>
+      <RecommendedProducts
+        products={recommendedProducts}
+        onAddToCart={(product, variant) => addToCart(product, variant, 1)}
+      />
     </div>
   );
 }

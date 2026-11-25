@@ -21,8 +21,7 @@ function RecommendedCard({
   onAddToCart: (product: Product, variant: ProductVariant) => void;
 }) {
   const defaultVariant = product.variants[0];
-  const thumbnail =
-    product.image || product.images?.[0] || defaultVariant?.image || "";
+  const thumbnail = product.image || "";
   const isOutOfStock = !defaultVariant || defaultVariant.stock <= 0;
 
   const discountPercent =

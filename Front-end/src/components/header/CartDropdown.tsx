@@ -44,10 +44,7 @@ export default function CartDropdown({ isOpen, onClose }: CartDropdownProps) {
           <div className="flex flex-col divide-y divide-gray-100 overflow-y-auto max-h-[230px]">
             {displayedCartItems.map((item) => {
               const thumbnail =
-                item.variant.image ||
-                item.product.image ||
-                item.product.images?.[0] ||
-                "";
+                item.variant.images?.[0] || item.product.image || "";
 
               return (
                 <div
