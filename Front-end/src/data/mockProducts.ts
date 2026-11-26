@@ -6,7 +6,7 @@ import type {
   PromoBannerData,
   MagSafeSlide,
   CartItem,
-} from "./types/product";
+} from "../types/product";
 
 // Shared sizing configurations
 

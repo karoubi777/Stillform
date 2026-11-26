@@ -3,10 +3,10 @@ import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./header/Header";
 import Footer from "./Footer";
-import MobileMenu from "./header/MobileMenu";
+import MobileMenu from "./header/SideMenu";
 import BlogFooter from "./blog/BlogFooter";
 import ScrollToTop from "./shared/ScrollToTop";
-import { mockcartitems, mockTopProducts } from "../mockProducts";
+import { mockcartitems, mockTopProducts } from "../data/mockProducts";
 type LayoutProps = {
   footerVariant?: "default" | "blog";
 };

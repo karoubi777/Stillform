@@ -2,9 +2,11 @@ import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { mockCatalogProducts } from "../data/mock-general-products";
+import { mockRelatedProducts } from "../data/mockProducts"; // Recommended products
 import CatalogToolbar from "../components/catalog/CatalogToolbar";
 import FilterSidebar from "../components/catalog/FilterSidebar";
 import CatalogProductCard from "../components/catalog/CatalogProductCard";
+import CatalogNotFound from "../components/catalog/ProductNotFound"; // <-- 1. Import new component
 import type { Product, ProductFilterState, SortOption } from "../types/product";
 
 const PRICE_MIN = 0;
@@ -16,10 +18,8 @@ export default function Catalogpage() {
   const initialSearch = searchParams.get("q") || "";
   const initialGender = searchParams.get("gender") || "All";
 
-  // 1. Source product list (replace with backend fetch later; never mutate directly)
   const [rawProducts] = useState<Product[]>(mockCatalogProducts);
 
-  // 2. Per-user Favorites (replace with user wishlist context / API later)
   const [favoriteIds, setFavoriteIds] = useState<number[]>(() => {
     try {
       const saved = localStorage.getItem("favorite_product_ids");
@@ -41,7 +41,6 @@ export default function Catalogpage() {
     );
   }
 
-  // 3. Filter, Sort & Pagination State
   const [filters, setFilters] = useState<ProductFilterState>({
     searchQuery: initialSearch,
     category: initialCategory,
@@ -56,7 +55,6 @@ export default function Catalogpage() {
     maxPrice: PRICE_MAX,
   });
 
-  // Sync URL query updates (e.g. clicking another category or searching again)
   useEffect(() => {
     setFilters((prev) => ({
       ...prev,
@@ -83,9 +81,9 @@ export default function Catalogpage() {
 
   function handleResetFilters() {
     setFilters({
-      searchQuery: initialSearch,
-      category: initialCategory,
-      gender: initialGender,
+      searchQuery: "",
+      category: "All",
+      gender: "All",
       brandSearch: "",
       brands: [],
       models: [],
@@ -98,7 +96,6 @@ export default function Catalogpage() {
     setCurrentPage(1);
   }
 
-  // 4. Derived Filtered & Sorted List
   const filteredProducts = useMemo(() => {
     const q = filters.searchQuery.trim().toLowerCase();
 
@@ -110,13 +107,6 @@ export default function Catalogpage() {
         return false;
       }
       if (
-        filters.category !== "All" &&
-        product.category?.toLowerCase() !== filters.category.toLowerCase()
-      ) {
-        return false;
-      }
-      if (
-        filters.category &&
         filters.category !== "All" &&
         product.category?.toLowerCase() !== filters.category.toLowerCase()
       ) {
@@ -156,14 +146,14 @@ export default function Catalogpage() {
       }
 
       if (filters.colors.length > 0) {
-        const hasColor = product.variants.some((v) =>
+        const hasColor = product.variants?.some((v) =>
           filters.colors.includes(v.color.name),
         );
         if (!hasColor) return false;
       }
 
       if (filters.sizes.length > 0) {
-        const hasSize = product.variants.some((v) =>
+        const hasSize = product.variants?.some((v) =>
           filters.sizes.includes(v.size ?? "One Size"),
         );
         if (!hasSize) return false;
@@ -186,19 +176,13 @@ export default function Catalogpage() {
         case "price-desc":
           return b.price - a.price;
         case "rating":
-          return b.rating - a.rating;
-        case "discount": {
-          const discA = (a.originalPrice - a.price) / (a.originalPrice || 1);
-          const discB = (b.originalPrice - b.price) / (b.originalPrice || 1);
-          return discB - discA;
-        }
+          return (b.rating || 0) - (a.rating || 0);
         default:
-          return b.reviews - a.reviews;
+          return (b.reviews || 0) - (a.reviews || 0);
       }
     });
   }, [rawProducts, filters, sortBy]);
 
-  // 5. Pagination
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
   const paginatedProducts = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
@@ -238,7 +222,7 @@ export default function Catalogpage() {
         activeFilterCount={activeFilterCount}
       />
 
-      {/* Main Content: Sidebar (Left) + Product Grid (Right) */}
+      {/* Main Content: Sidebar (Left) + Content (Right) */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-[8.5%] pt-6 flex items-start gap-8">
         <FilterSidebar
           allProducts={rawProducts}
@@ -252,38 +236,28 @@ export default function Catalogpage() {
           onCloseMobile={() => setIsMobileFilterOpen(false)}
         />
 
+        {/* 2. Right Column (min-w-0 prevents Swiper from expanding infinitely) */}
         <div className="flex-1 min-w-0">
           {paginatedProducts.length === 0 ? (
-            <div className="py-16 text-center border border-dashed border-gray-200 rounded-md">
-              <p className="text-sm font-semibold text-gray-800 mb-1">
-                No products match your filters
-              </p>
-              <p className="text-xs text-gray-400 mb-4">
-                Try clearing some filters or widening your price range.
-              </p>
-              <button
-                type="button"
-                onClick={handleResetFilters}
-                className="px-4 h-[34px] rounded bg-[#3B72D9] text-white text-xs font-medium hover:bg-blue-700 transition"
-              >
-                Clear all filters
-              </button>
-            </div>
+            /* Render the Not Found Illustration + Swiper here */
+            <CatalogNotFound
+              searchQuery={filters.searchQuery}
+              recommendedProducts={mockRelatedProducts}
+              onResetFilters={handleResetFilters}
+            />
           ) : (
             <>
-              {/* 1 col on mobile/tablet, 3 cols on desktop */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 {paginatedProducts.map((product) => (
                   <CatalogProductCard
                     key={product.id}
                     product={product}
-                    isFavorite={favoriteIds.includes(product.id)}
+                    isFavorite={favoriteIds.includes(Number(product.id))}
                     onToggleFavorite={handleToggleFavorite}
                   />
                 ))}
               </div>
 
-              {/* Pagination */}
               {totalPages > 1 && (
                 <div className="mt-8 flex items-center justify-center gap-2">
                   {Array.from({ length: totalPages }).map((_, idx) => {

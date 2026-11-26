@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useParams, useLocation, useNavigate, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../hooks/useFavorites";
-import { recommendedProducts } from "../mockProducts";
+import { recommendedProducts } from "../data/recommende-products";
 import RecommendedProducts from "../components/shared/RecommendedProducts";
 
 import {

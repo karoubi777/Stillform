@@ -6,7 +6,7 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
-import { mockcartitems } from "../mockProducts";
+import { mockcartitems } from "../data/mockProducts";
 import type {
   AppliedCoupon,
   CartItem,

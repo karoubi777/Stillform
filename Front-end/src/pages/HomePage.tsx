@@ -13,8 +13,7 @@ import {
   mockTopProducts,
   promoBannersMock,
   mockMagSafeSlides,
-  
-} from "../mockProducts";
+} from "../data/mockProducts";
 
 export default function HomePage() {
   return (

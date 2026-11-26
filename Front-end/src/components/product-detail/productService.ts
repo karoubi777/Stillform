@@ -3,11 +3,8 @@ import {
   mockProductDetails,
   mockProductReviews,
 } from "../../data/mock-general-products";
-import {
-  mockTopProducts,
-  mockFlashSales,
-  recommendedProducts,
-} from "../../mockProducts";
+import { mockTopProducts, mockFlashSales } from "../../data/mockProducts";
+import { recommendedProducts } from "../../data/recommende-products";
 import { COUNTRIES } from "../../data/locations";
 import { PAYMENT_METHODS, SHIPPING_METHODS } from "../../data/checkoutMethods";
 import type {
@@ -83,7 +80,7 @@ export async function fetchShippingAndPaymentOptions(): Promise<{
     paymentMethods: PAYMENT_METHODS,
   };
 }
-import { mockRelatedProducts } from "../../mockProducts";
+import { mockRelatedProducts } from "../../data/mockProducts";
 // ...existing imports
 
 export async function fetchRelatedProducts(query?: string): Promise<Product[]> {

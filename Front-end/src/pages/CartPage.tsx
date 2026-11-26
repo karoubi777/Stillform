@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSessionStorage } from "../hooks/useStorage";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
-import { recommendedProducts } from "../mockProducts";
+import { recommendedProducts } from "../data/recommende-products";
 import { PAYMENT_METHODS, SHIPPING_METHODS } from "../data/checkoutMethods";
 
 import CheckoutStepper from "../components/cart/CheckoutStepper";

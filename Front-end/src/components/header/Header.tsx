@@ -271,10 +271,10 @@ export default function Header({ products = [], onMenuClick }: HeaderProps) {
                       className="appearance-none bg-transparent pr-4 cursor-pointer outline-none"
                       aria-label="Select currency"
                     >
-                      <option value="EUR" className="bg-neutral-900 text-white">
+                      <option value="USD" className="bg-neutral-900 text-white">
                         USD
                       </option>
-                      <option value="USD" className="bg-neutral-900 text-white">
+                      <option value="EUR" className="bg-neutral-900 text-white">
                         EUR
                       </option>
                     </select>
@@ -295,13 +295,13 @@ export default function Header({ products = [], onMenuClick }: HeaderProps) {
                       aria-label="Select language"
                     >
                       <option
-                        value="Deutsch"
+                        value="English"
                         className="bg-neutral-900 text-white"
                       >
                         English
                       </option>
                       <option
-                        value="English"
+                        value="Deutsch"
                         className="bg-neutral-900 text-white"
                       >
                         Deutsch

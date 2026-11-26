@@ -27,7 +27,7 @@ export default function MegaMenu({
     <div
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className="absolute left-[5%] lg:left-[8.5%] top-full z-50 mt-0.5 w-[90%] lg:w-[83%] max-w-[1100px] bg-white rounded-b-xl rounded-tr-xl shadow-2xl border border-gray-100 p-8 transition-all animate-in fade-in slide-in-from-top-1 duration-200"
+      className="absolute left-1/2 -translate-x-1/2 top-full z-50 mt-0.5 w-[calc(100%-2rem)] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-5rem)] max-w-[1200px] bg-white rounded-b-xl rounded-xl shadow-2xl border border-gray-100 p-8 transition-all animate-in fade-in slide-in-from-top-1 duration-200"
     >
       <div className="flex gap-8 justify-between">
         {/* 4 Text Columns */}

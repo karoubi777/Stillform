@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import type { NavigationOptions } from "swiper/types";
@@ -7,10 +7,10 @@ import type { NavigationOptions } from "swiper/types";
 import "swiper/css";
 import "swiper/css/navigation";
 
-// Replace with your illustration path
+// Put your 404 illustration in public/images/not-found.png
 const NO_RESULTS_ILLUSTRATION = "/images/not-found.png";
 
-import { mockRelatedProducts } from "../mockProducts";
+import { mockRelatedProducts } from "../data/mockProducts";
 import type { Product } from "../types/product";
 
 type NotFoundPageProps = {
@@ -20,65 +20,74 @@ type NotFoundPageProps = {
 export default function NotFoundPage({
   relatedProducts = mockRelatedProducts,
 }: NotFoundPageProps) {
-  const [searchParams] = useSearchParams();
-  const searchQuery = searchParams.get("q") || "Blue Sony Camera";
-
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
 
   return (
     <div className="w-full bg-white flex flex-col justify-between">
       {/* ========================================================
-          1. TOP NOT FOUND SECTION (Height: 427px, max-w: 991px)
-          - Centered horizontally and vertically
+          1. TOP 404 NOT FOUND SECTION (Height ~427px, max-w: 991px)
          ======================================================== */}
-      <section className="w-full min-h-[427px] max-w-[991px] mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 my-auto py-8">
-        {/* Left: Illustration (Centered on mobile) */}
+      <section className="w-full min-h-[427px] max-w-[991px] mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 my-auto py-8 text-left">
+        {/* Left: Illustration */}
         <div className="w-full max-w-[260px] sm:max-w-[320px] flex items-center justify-center shrink-0 mx-auto sm:mx-0">
           <img
             src={NO_RESULTS_ILLUSTRATION}
-            alt="No results found"
+            alt="Page not found"
             className="w-full h-auto object-contain block mx-auto"
           />
         </div>
 
-        {/* Right: Information Card (Centered on mobile) */}
-        <div className="w-full max-w-[430px] rounded-xl border border-gray-200 bg-white p-5 sm:p-6 shadow-xs text-left mx-auto sm:mx-0">
-          <h2 className="text-xs sm:text-sm font-bold text-gray-900 leading-snug mb-3">
-            No results were found for searching &quot;{searchQuery}&quot;.
-          </h2>
+        {/* Right: 404 Information Card */}
+        <div className="w-full max-w-[430px] rounded-xl border border-gray-200 bg-white p-6 shadow-xs mx-auto sm:mx-0 flex flex-col gap-4">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-[#FF8A00] block mb-1">
+              Error 404
+            </span>
+            <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight leading-snug">
+              Oops! Page not found.
+            </h1>
+          </div>
 
-          <div className="flex flex-col gap-3 text-xs text-gray-600">
-            {/* Advice 1 */}
-            <div className="flex items-start gap-2.5">
-              <span className="flex items-center justify-center w-4 h-4 rounded-full border border-[#FF8A00] text-[#FF8A00] text-[10px] font-bold shrink-0 mt-0.5">
-                !
-              </span>
-              <p className="leading-relaxed">
-                We recommend you to search different clear key words to get the
-                best result.
-              </p>
-            </div>
+          <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">
+            The page you are looking for might have been removed, had its name
+            changed, or is temporarily unavailable.
+          </p>
 
-            {/* Advice 2 */}
-            <div className="flex items-start gap-2.5">
-              <span className="flex items-center justify-center w-4 h-4 rounded-full border border-[#FF8A00] text-[#FF8A00] text-[10px] font-bold shrink-0 mt-0.5">
-                !
-              </span>
-              <p className="leading-relaxed">
-                You can see the most related purchased products bellow.
-              </p>
-            </div>
+          {/* Back to main page action button */}
+          <div className="pt-2">
+            <Link
+              to="/"
+              className="
+                inline-flex items-center justify-center gap-2
+                w-full sm:w-auto px-6 h-[44px] rounded bg-[#3B72D9] 
+                hover:bg-[#2C62C9] active:scale-[0.99] transition-all
+                text-white text-xs sm:text-sm font-semibold tracking-wide shadow-md
+              "
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                />
+              </svg>
+              <span>Back to the main page</span>
+            </Link>
           </div>
         </div>
       </section>
 
       {/* ========================================================
           2. BOTTOM RELATED PRODUCTS SWIPER (Height: 411px)
-          - Exactly aligned with footer using max-w-[991px]
          ======================================================== */}
       <section className="w-full bg-[#F8F9FA] h-[411px] flex items-center py-4">
-        {/* Container matches footer width (max-w-[991px]) */}
         <div className="w-full max-w-[991px] mx-auto px-4 sm:px-6 relative h-full flex items-center">
           {/* Left Arrow Button */}
           <button
@@ -125,9 +134,9 @@ export default function NotFoundPage({
           >
             {relatedProducts.map((product) => (
               <SwiperSlide key={product.id} className="!w-[206px]">
-                {/* Product Card: Exactly 206px width, 400px height */}
+                {/* Product Card: 206px x 400px */}
                 <article className="w-[206px] h-[400px] bg-white rounded-md border border-gray-100 shadow-xs flex flex-col justify-between p-4 text-left">
-                  {/* Image Container with object-contain */}
+                  {/* Image Container */}
                   <div className="w-full h-[220px] flex items-center justify-center p-2 overflow-hidden">
                     <img
                       src={product.image}

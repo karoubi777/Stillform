@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import EmailConfirmationModal from "../components/shared/EmailConfirmationModal";
 
 type AuthMode = "signin" | "signup";
 
@@ -17,6 +18,7 @@ export default function AuthPage() {
   // UI States
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Validation rules for required (*) fields
@@ -25,7 +27,6 @@ export default function AuthPage() {
   const isNameValid = mode === "signup" ? name.trim().length > 0 : true;
   const isTermsValid = mode === "signup" ? agreedToTerms : true;
 
-  // Button turns blue ONLY when all required fields are valid
   const canSubmit =
     isEmailValid && isPasswordValid && isNameValid && isTermsValid;
 
@@ -37,38 +38,34 @@ export default function AuthPage() {
     setErrorMessage(null);
 
     try {
-      // Simulate API call (Connect to your real backend here)
-      await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          // Example: trigger error if email is "fail@test.com"
-          if (email === "fail@test.com") {
-            reject(new Error("Invalid credentials or server timeout."));
-          } else {
-            resolve(true);
-          }
-        }, 1000);
-      });
-
-      // On successful login/signup, navigate back home
-      navigate("/");
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setErrorMessage(err.message);
+      if (mode === "signup") {
+        setIsModalOpen(true);
       } else {
-        setErrorMessage("An unexpected error occurred. Please try again.");
+        navigate("/");
       }
+    } catch {
+      setErrorMessage("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
   }
 
+  function handleCloseModal() {
+    setIsModalOpen(false);
+    setMode("signin");
+  }
+
   return (
-    <div className="w-full bg-white flex flex-col justify-center py-10 px-4 sm:px-6 lg:px-8">
-      {/* Top Bar: Back to website link */}
-      <div className="w-full max-w-[1440px] mx-auto flex justify-end">
+    /* 
+      - Mobile: min-h-screen with natural scrolling (overflow-y-auto)
+      - Desktop: strictly locked to screen height (lg:h-screen lg:overflow-hidden)
+    */
+    <div className="w-full min-h-screen lg:h-screen lg:overflow-hidden bg-white flex flex-col justify-between px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+      {/* Top Bar: Back to website */}
+      <div className="w-full max-w-[1440px] mx-auto flex justify-end shrink-0">
         <Link
           to="/"
-          className="flex items-center gap-2 text-xs sm:text-sm font-medium text-gray-600 hover:text-black transition-colors"
+          className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-gray-500 hover:text-black transition-colors"
         >
           <svg
             className="w-4 h-4"
@@ -87,37 +84,27 @@ export default function AuthPage() {
         </Link>
       </div>
 
-      {/* Main Centered Form Card (Max 606px) */}
-      <div className="w-full max-w-[606px] mx-auto my-auto py-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight mb-8">
+      {/* Main Centered Form Card (Max 606px, centered vertically on desktop) */}
+      <div className="w-full max-w-[520px] lg:max-w-[606px] mx-auto my-auto py-4">
+        {/* Title */}
+        <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 tracking-tight mb-4 lg:mb-5 text-left">
           {mode === "signin" ? "Sign in" : "Sign up"}
         </h1>
 
-        {/* Server / Timeout Error Banner */}
         {errorMessage && (
-          <div className="mb-6 flex items-start gap-3 rounded-md bg-red-50 p-4 border border-red-200 text-red-700 text-xs sm:text-sm">
-            <svg
-              className="w-5 h-5 shrink-0 text-red-500 mt-0.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
-            <span>{errorMessage}</span>
+          <div className="mb-3 rounded-md bg-red-50 p-3 border border-red-200 text-red-700 text-xs">
+            {errorMessage}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-3 lg:gap-3.5 w-full text-left"
+        >
           {/* SIGN UP ONLY: Name Field */}
           {mode === "signup" && (
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs sm:text-sm font-medium text-gray-700">
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium text-gray-700">
                 Name <span className="text-red-500">*</span>
               </label>
               <input
@@ -126,14 +113,14 @@ export default function AuthPage() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Full name"
                 required
-                className="w-full h-[48px] sm:h-[52px] px-4 rounded border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 outline-none focus:border-gray-400 transition"
+                className="w-full h-[44px] lg:h-[48px] px-3.5 rounded border border-gray-200 text-xs sm:text-sm text-gray-800 placeholder:text-gray-400 outline-none focus:border-gray-400 transition"
               />
             </div>
           )}
 
           {/* Email Field */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs sm:text-sm font-medium text-gray-700">
+          <div className="flex flex-col gap-1">
+            <label className="text-xs font-medium text-gray-700">
               Email <span className="text-red-500">*</span>
             </label>
             <div className="relative flex items-center">
@@ -143,17 +130,17 @@ export default function AuthPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email address"
                 required
-                className="w-full h-[48px] sm:h-[52px] pl-4 pr-11 rounded border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 outline-none focus:border-gray-400 transition"
+                className="w-full h-[44px] lg:h-[48px] pl-3.5 pr-10 rounded border border-gray-200 text-xs sm:text-sm text-gray-800 placeholder:text-gray-400 outline-none focus:border-gray-400 transition"
               />
-              <span className="absolute right-4 text-gray-400 text-sm select-none">
+              <span className="absolute right-3.5 text-gray-400 text-xs select-none">
                 @
               </span>
             </div>
           </div>
 
-          {/* Password Field with Show/Hide Toggle */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs sm:text-sm font-medium text-gray-700">
+          {/* Password Field */}
+          <div className="flex flex-col gap-1">
+            <label className="text-xs font-medium text-gray-700">
               Password <span className="text-red-500">*</span>
             </label>
             <div className="relative flex items-center">
@@ -163,16 +150,16 @@ export default function AuthPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="password"
                 required
-                className="w-full h-[48px] sm:h-[52px] pl-4 pr-11 rounded border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 outline-none focus:border-gray-400 transition"
+                className="w-full h-[44px] lg:h-[48px] pl-3.5 pr-10 rounded border border-gray-200 text-xs sm:text-sm text-gray-800 placeholder:text-gray-400 outline-none focus:border-gray-400 transition"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                className="absolute right-3.5 p-1 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 p-1 text-gray-400 hover:text-gray-600"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-4 h-4"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={1.8}
@@ -196,51 +183,44 @@ export default function AuthPage() {
             </div>
           </div>
 
-          {/* Options Row (Remember Me & Forgot Password) */}
+          {/* Options: Remember Me & Forgot Password */}
           {mode === "signin" ? (
-            <div className="flex items-center justify-between text-xs sm:text-sm">
+            <div className="flex items-center justify-between text-xs sm:text-sm pt-0.5">
               <label className="flex items-center gap-2 text-gray-700 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded text-[#3B72D9] border-gray-300 focus:ring-0"
+                  className="w-3.5 h-3.5 rounded text-[#3B72D9] border-gray-300 focus:ring-0"
                 />
                 Remember for 30 days
               </label>
-              <Link to="/forgotpass" className="hover:bg-red">
+              <Link to="/forgotpass" className="text-[#3B72D9] hover:underline">
                 Forgot password
               </Link>
             </div>
           ) : (
-            /* SIGN UP Terms Checkbox */
-            <label className="flex items-start gap-2.5 text-xs text-gray-500 cursor-pointer pt-1">
+            <label className="flex items-start gap-2 text-[11px] sm:text-xs text-gray-500 cursor-pointer pt-0.5">
               <input
                 type="checkbox"
                 checked={agreedToTerms}
                 onChange={(e) => setAgreedToTerms(e.target.checked)}
                 required
-                className="w-4 h-4 mt-0.5 rounded text-[#3B72D9] border-gray-300 focus:ring-0 shrink-0"
+                className="w-3.5 h-3.5 mt-0.5 rounded text-[#3B72D9] border-gray-300 focus:ring-0 shrink-0"
               />
               <span>
                 Terms and conditions agreement should start with an introduction
-                that lets users know they&apos;re reading a terms and conditions
-                agreement
+                that lets users know they&apos;re reading an agreement.
               </span>
             </label>
           )}
 
-          {/* ========================================================
-              PRIMARY SUBMIT BUTTON
-              - Disabled: Gray background (#D1D5DB)
-              - Enabled: Active Blue background (#3B72D9)
-              - Height: 56px, Full width
-             ======================================================== */}
+          {/* Primary Submit Button */}
           <button
             type="submit"
             disabled={!canSubmit || isLoading}
             className={`
-              w-full h-[56px] rounded text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 mt-2
+              w-full h-[48px] lg:h-[54px] rounded text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 mt-1
               ${
                 canSubmit && !isLoading
                   ? "bg-[#3B72D9] text-white hover:bg-[#2C62C9] active:scale-[0.99] shadow-md cursor-pointer"
@@ -255,10 +235,10 @@ export default function AuthPage() {
                 : "SIGN UP"}
           </button>
 
-          {/* Divider */}
-          <div className="relative flex items-center justify-center my-2">
+          {/* OR Divider */}
+          <div className="relative flex items-center justify-center my-0.5">
             <div className="border-t border-gray-200 w-full" />
-            <span className="bg-white px-3 text-xs text-gray-400 uppercase tracking-widest font-medium">
+            <span className="bg-white px-2.5 text-[11px] text-gray-400 uppercase tracking-widest font-medium">
               OR
             </span>
             <div className="border-t border-gray-200 w-full" />
@@ -267,10 +247,9 @@ export default function AuthPage() {
           {/* Google Sign In/Up Button */}
           <button
             type="button"
-            className="w-full h-[56px] rounded bg-[#3D3D3D] hover:bg-[#2C2C2C] active:scale-[0.99] text-white text-xs sm:text-sm font-medium flex items-center justify-center gap-3 transition-colors shadow-xs"
+            className="w-full h-[48px] lg:h-[54px] rounded bg-[#3D3D3D] hover:bg-[#2C2C2C] active:scale-[0.99] text-white text-xs sm:text-sm font-medium flex items-center justify-center gap-3 transition-colors shadow-xs"
           >
-            {/* Google Colorful 'G' SVG */}
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -294,9 +273,9 @@ export default function AuthPage() {
           </button>
 
           {/* Promotional Free Shipping Notice */}
-          <div className="flex items-center gap-2 text-xs sm:text-sm text-[#FF3B16] font-medium mt-1">
+          <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-[#FF3B16] font-medium">
             <svg
-              className="w-4 h-4 shrink-0"
+              className="w-3.5 h-3.5 shrink-0"
               fill="none"
               stroke="currentColor"
               strokeWidth={2}
@@ -314,8 +293,8 @@ export default function AuthPage() {
             </span>
           </div>
 
-          {/* Switcher: Sign in <-> Sign up */}
-          <div className="text-center text-xs sm:text-sm text-gray-600 mt-4">
+          {/* Switcher */}
+          <div className="text-center text-xs sm:text-sm text-gray-600 mt-2">
             {mode === "signin" ? (
               <p>
                 Don&apos;t have an account?{" "}
@@ -349,8 +328,13 @@ export default function AuthPage() {
         </form>
       </div>
 
-      {/* Empty bottom spacer to keep form centered */}
-      <div className="h-6" />
+      {/* Confirmation Modal */}
+      <EmailConfirmationModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        email={email}
+        type="registration"
+      />
     </div>
   );
 }

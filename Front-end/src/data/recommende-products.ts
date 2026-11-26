@@ -1,0 +1,133 @@
+import type { Product, ProductSizing } from "../types/product";
+
+// Shared sizing configurations
+
+const clothingSizing: ProductSizing = {
+  type: "alpha",
+  label: "Size",
+  guide: {
+    title: "Clothing size guide",
+    unit: "cm",
+    columns: ["Chest", "Waist", "Hip", "Length"],
+    rows: [
+      { size: "XS", measurements: [82, 64, 90, 60] },
+      { size: "S", measurements: [86, 68, 94, 61] },
+      { size: "M", measurements: [90, 72, 98, 62] },
+      { size: "L", measurements: [96, 78, 104, 63] },
+      { size: "XL", measurements: [102, 84, 110, 64] },
+    ],
+    note: "Measurements are illustrative mock data. Check the actual brand size guide before using these values.",
+  },
+};
+export const recommendedProducts: Product[] = [
+  {
+    id: 201,
+    brand: "Zara",
+    name: "SHORT PRINTED DRESS",
+    price: 69.99,
+    originalPrice: 129.99,
+    rating: 4.5,
+    reviews: 32,
+    reviewCount: 12,
+    image: "/images/cart/recommended-1.png",
+    gender: "Women",
+    sizing: clothingSizing,
+    variants: [
+      {
+        id: 2011,
+        color: { id: 8, name: "Blue", hex: "#2563EB" },
+        size: "S",
+        stock: 6,
+        images: ["/images/cart/recommended-1.png"],
+      },
+    ],
+  },
+  {
+    id: 202,
+    brand: "Zara",
+    name: "SHORT PRINTED DRESS",
+    price: 69.99,
+    originalPrice: 129.99,
+    rating: 4.5,
+    reviews: 28,
+    reviewCount: 9,
+    image: "/images/cart/recommended-2.png",
+    gender: "Women",
+    sizing: clothingSizing,
+    variants: [
+      {
+        id: 2021,
+        color: { id: 9, name: "Navy", hex: "#1E3A8A" },
+        size: "M",
+        stock: 5,
+        images: ["/images/cart/recommended-2.png"],
+      },
+    ],
+  },
+  {
+    id: 203,
+    brand: "Zara",
+    name: "SHORT PRINTED DRESS",
+    price: 69.99,
+    originalPrice: 129.99,
+    rating: 4.8,
+    reviews: 41,
+    reviewCount: 15,
+    image: "/images/cart/recommended-3.png",
+    gender: "Women",
+    sizing: clothingSizing,
+    variants: [
+      {
+        id: 2031,
+        color: { id: 7, name: "Pink", hex: "#EC4899" },
+        size: "S",
+        stock: 9,
+        images: ["/images/cart/recommended-3.png"],
+      },
+    ],
+  },
+  {
+    id: 204,
+    brand: "Zara",
+    name: "SHORT PRINTED DRESS",
+    price: 69.99,
+    originalPrice: 129.99,
+    rating: 4.3,
+    reviews: 19,
+    reviewCount: 6,
+    image: "/images/cart/recommended-4.png",
+    gender: "Women",
+    sizing: clothingSizing,
+    variants: [
+      {
+        id: 2041,
+        color: { id: 10, name: "Mint", hex: "#34D399" },
+        size: "M",
+        stock: 4,
+        images: ["/images/cart/recommended-4.png"],
+      },
+    ],
+  },
+  {
+    id: 205,
+    brand: "Zara",
+    name: "SHORT PRINTED DRESS",
+    price: 69.99,
+    originalPrice: 129.99,
+    rating: 4.6,
+    reviews: 22,
+    reviewCount: 7,
+    image: "/images/cart/recommended-1.png",
+    gender: "Women",
+    sizing: clothingSizing,
+    variants: [
+      {
+        id: 2051,
+        color: { id: 8, name: "Blue", hex: "#2563EB" },
+        size: "L",
+        stock: 3,
+        images: ["/images/cart/recommended-1.png"],
+      },
+    ],
+  },
+];
