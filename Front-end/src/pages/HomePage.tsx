@@ -1,6 +1,6 @@
 import FlashSales from "../components/home/FlashSales";
 import TrendingMustHave from "../components/home/TrendingMustHave";
-import Top100 from "../components/home/Top100";
+import Top100 from "../components/home/TopProduct";
 import PromoBanner from "../components/home/PromoBanner";
 import Homehero from "../components/home/Homehero";
 import HeroTabletDesktop from "../components/home/HeroTabletDesktop";

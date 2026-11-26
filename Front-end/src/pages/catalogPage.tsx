@@ -5,7 +5,7 @@ import { mockCatalogProducts } from "../data/mock-general-products";
 import { mockRelatedProducts } from "../data/mockProducts"; // Recommended products
 import CatalogToolbar from "../components/catalog/CatalogToolbar";
 import FilterSidebar from "../components/catalog/FilterSidebar";
-import CatalogProductCard from "../components/catalog/CatalogProductCard";
+import ProductCard from "../components/shared/ProductCard";
 import CatalogNotFound from "../components/catalog/ProductNotFound"; // <-- 1. Import new component
 import type { Product, ProductFilterState, SortOption } from "../types/product";
 
@@ -19,27 +19,6 @@ export default function Catalogpage() {
   const initialGender = searchParams.get("gender") || "All";
 
   const [rawProducts] = useState<Product[]>(mockCatalogProducts);
-
-  const [favoriteIds, setFavoriteIds] = useState<number[]>(() => {
-    try {
-      const saved = localStorage.getItem("favorite_product_ids");
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  useEffect(() => {
-    localStorage.setItem("favorite_product_ids", JSON.stringify(favoriteIds));
-  }, [favoriteIds]);
-
-  function handleToggleFavorite(productId: number) {
-    setFavoriteIds((prev) =>
-      prev.includes(productId)
-        ? prev.filter((id) => id !== productId)
-        : [...prev, productId],
-    );
-  }
 
   const [filters, setFilters] = useState<ProductFilterState>({
     searchQuery: initialSearch,
@@ -249,12 +228,7 @@ export default function Catalogpage() {
             <>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 {paginatedProducts.map((product) => (
-                  <CatalogProductCard
-                    key={product.id}
-                    product={product}
-                    isFavorite={favoriteIds.includes(Number(product.id))}
-                    onToggleFavorite={handleToggleFavorite}
-                  />
+                  <ProductCard key={product.id} product={product} />
                 ))}
               </div>
 

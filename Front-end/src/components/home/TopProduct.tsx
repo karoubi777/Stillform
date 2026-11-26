@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import TopProductCard from "./TopProductCard";
-import { useFavorites } from "../../hooks/useFavorites";
+import ProductCard from "../shared/ProductCard";
 import type { Product } from "../../types/product";
 
 type Top100Props = {
@@ -10,8 +9,6 @@ type Top100Props = {
 };
 
 export default function Top100({ products = [] }: Top100Props) {
-  const { isFavorite, toggleFavorite } = useFavorites();
-
   if (!products.length) return null;
 
   return (
@@ -21,7 +18,7 @@ export default function Top100({ products = [] }: Top100Props) {
           Top 100
         </h2>
         <Link
-          to="/products?sort=popular"
+          to="/catalog?sort=popular"
           className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-gray-500 hover:text-black transition-colors"
         >
           View all
@@ -39,11 +36,7 @@ export default function Top100({ products = [] }: Top100Props) {
         >
           {products.map((product) => (
             <SwiperSlide key={product.id} className="!w-[260px]">
-              <TopProductCard
-                product={product}
-                isFavorite={isFavorite(product.id)}
-                onToggleFavorite={toggleFavorite}
-              />
+              <ProductCard product={product} className="max-w-[300px]" />
             </SwiperSlide>
           ))}
         </Swiper>
@@ -52,11 +45,10 @@ export default function Top100({ products = [] }: Top100Props) {
       {/* Tablet & Desktop: Fluid Grid */}
       <div className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 justify-items-center w-full">
         {products.map((product) => (
-          <TopProductCard
+          <ProductCard
             key={product.id}
             product={product}
-            isFavorite={isFavorite(product.id)}
-            onToggleFavorite={toggleFavorite}
+            className="max-w-[300px]"
           />
         ))}
       </div>
