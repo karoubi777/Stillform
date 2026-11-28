@@ -6,7 +6,7 @@ import { mockRelatedProducts } from "../data/mockProducts"; // Recommended produ
 import CatalogToolbar from "../components/catalog/CatalogToolbar";
 import FilterSidebar from "../components/catalog/FilterSidebar";
 import ProductCard from "../components/shared/ProductCard";
-import CatalogNotFound from "../components/catalog/ProductNotFound"; // <-- 1. Import new component
+import CatalogNotFound from "../components/catalog/ProductNotFound"; 
 import type { Product, ProductFilterState, SortOption } from "../types/product";
 
 const PRICE_MIN = 0;

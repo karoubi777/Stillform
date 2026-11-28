@@ -3,8 +3,10 @@ import { useParams, useLocation, useNavigate, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../hooks/useFavorites";
 import { recommendedProducts } from "../data/recommende-products";
-import RecommendedProducts from "../components/shared/RecommendedProducts";
 
+import { useLocalStorage } from "../hooks/useStorage";
+import ProductShelfSwiper from "../components/product-detail/ProductShelfSwiper";
+import { fetchProductsByIds } from "../components/product-detail/productService";
 import {
   fetchProductById,
   fetchProductDetails,
@@ -34,7 +36,13 @@ export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
-
+  const [recentIds, setRecentIds] = useLocalStorage<number[]>(
+    "recently_viewed_ids",
+    [],
+  );
+  const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<
+    Product[]
+  >([]);
   const passedProduct = (location.state as { product?: Product } | null)
     ?.product;
   const numericId = Number(id);
@@ -170,6 +178,36 @@ export default function ProductDetailPage() {
       cancelled = true;
     };
   }, [activeTab, hasLoadedShipping]);
+  // Record valid product ID into localStorage (max 10; drops oldest on overflow)
+  useEffect(() => {
+    if (!product?.id) return;
+
+    setRecentIds((prev) => {
+      const list = Array.isArray(prev) ? prev : [];
+      if (list[0] === product.id) return list;
+      const withoutDup = list.filter((rid) => rid !== product.id);
+      return [product.id, ...withoutDup].slice(0, 10);
+    });
+  }, [product?.id, setRecentIds]);
+  // Load products for the saved IDs (excluding the currently viewed product)
+  useEffect(() => {
+    let cancelled = false;
+    const list = Array.isArray(recentIds) ? recentIds : [];
+    const idsToLoad = list.filter((rid) => rid !== product?.id);
+
+    if (idsToLoad.length === 0) {
+      setRecentlyViewedProducts([]);
+      return;
+    }
+
+    fetchProductsByIds(idsToLoad, recommendedProducts).then((loaded) => {
+      if (!cancelled) setRecentlyViewedProducts(loaded);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [recentIds, product?.id]);
 
   // Memoized stable list of gallery images (variant images + product images)
   const galleryImages = useMemo(() => {
@@ -404,10 +442,18 @@ export default function ProductDetailPage() {
           disabled={selectedVariant.stock <= 0}
         />
       </div>
-      <RecommendedProducts
+      <ProductShelfSwiper
+        title="You might also like"
         products={recommendedProducts}
         onAddToCart={(product, variant) => addToCart(product, variant, 1)}
       />
+      {recentlyViewedProducts.length > 0 && (
+        <ProductShelfSwiper
+          title="RECENTLY VIEWED"
+          products={recentlyViewedProducts}
+          onAddToCart={(p, variant) => addToCart(p, variant, 1)}
+        />
+      )}
     </div>
   );
 }

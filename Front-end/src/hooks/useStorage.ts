@@ -63,7 +63,7 @@ function useWebStorage<T>(
         typeof valueOrUpdater === "function"
           ? (valueOrUpdater as (prev: T) => T)(current)
           : valueOrUpdater;
-
+      if (Object.is(nextValue, current)) return;
       latestRef.current = nextValue;
       setStoredValue(nextValue);
 

@@ -84,7 +84,23 @@ import { mockRelatedProducts } from "../../data/mockProducts";
 // ...existing imports
 
 export async function fetchRelatedProducts(query?: string): Promise<Product[]> {
-  // Backend replacement: return (await fetch(`/api/products/related?q=${encodeURIComponent(query || "")}`)).json();
   void query;
   return mockRelatedProducts;
+}
+export async function fetchProductsByIds(
+  ids: number[],
+  extraPool: Product[] = [],
+): Promise<Product[]> {
+  if (!ids.length) return [];
+
+  const all: Product[] = [
+    ...mockCatalogProducts,
+    ...mockTopProducts,
+    ...mockFlashSales,
+    ...recommendedProducts,
+    ...extraPool,
+  ];
+  const byId = new Map(all.map((p) => [p.id, p]));
+
+  return ids.map((id) => byId.get(id)).filter((p): p is Product => Boolean(p));
 }
